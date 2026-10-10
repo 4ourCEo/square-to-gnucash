@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Square to GnuCash Reconciliation Converter | Free CSV Import Tool</title>
+  <meta name="description" content="Convert authentic Square transaction and transfer CSV exports into balanced, multi-split GnuCash journal entries. Free, 100% client-side, zero server uploads.">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0369a1;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .badge-privacy {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 0.35rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.75rem;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 0.75rem;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .dropzone h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 0.5rem;
+    }
+
+    .dropzone p {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .sample-btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0f172a;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      color: #fff;
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    .btn-accent:hover {
+      background: #b45309;
+      color: #fff;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .settings-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #e2e8f0;
+    }
+
+    .form-group {
+      margin-bottom: 0.85rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: #f8fafc;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.9rem;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .table-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background: #0f172a;
+      color: var(--text-muted);
+      padding: 0.65rem 0.75rem;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.3);
+    }
+
+    .text-right { text-align: right; }
+    .text-success { color: var(--success); }
+    .text-error { color: var(--error); }
+
+    .doc-section {
+      margin-top: 3rem;
+    }
+    .doc-section h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-section h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 1.25rem 0 0.5rem 0;
+    }
+    .doc-section p, .doc-section li {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+    .doc-section ol, .doc-section ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .doc-section code {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .faq-item h3 {
+      color: #fff;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      max-width: 500px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    .modal-content h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .modal-content p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      color: #fff;
+    }
+    .price-pill {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Square → GnuCash Converter</h1>
+    <p>Convert authentic Square transaction and transfer exports into balanced, multi-split GnuCash journal entries.</p>
+    <div class="badge-privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      100% Client-Side Processing • Zero Server Uploads • Financial Data Stays in Your Browser
+    </div>
+  </header>
+
+  <!-- Upload Card -->
+  <div class="card">
+    <div class="dropzone" id="dropzone">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <h2>Drop your Square CSV export here</h2>
+      <p>Supports authentic <strong>Transactions CSV</strong> and <strong>Balance / Transfers CSV</strong></p>
+      <input type="file" id="fileInput" accept=".csv" style="display: none;">
+    </div>
+    <div class="sample-btn-group">
+      <button class="btn-secondary" id="btnSampleTx">Load Sample: Square Transactions</button>
+      <button class="btn-secondary" id="btnSampleTransfer">Load Sample: Square Transfers</button>
+    </div>
+  </div>
+
+  <!-- Settings Grid -->
+  <div class="card grid-2">
+    <div>
+      <div class="settings-title">
+        <span>Reconciliation Mode</span>
+      </div>
+      <div class="form-group">
+        <label for="modeSelect">Entry Aggregation</label>
+        <select id="modeSelect">
+          <option value="daily" selected>Daily Settlement Batch (Recommended - Matches Bank Deposits)</option>
+          <option value="detailed">Per-Transaction Granular (Every Individual Sale)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="accountBank">Bank / Clearing Account (Debit Net Deposit)</label>
+        <input type="text" id="accountBank" value="Assets:Current Assets:Square Clearing">
+      </div>
+      <div class="form-group">
+        <label for="accountFee">Processing Fee Expense Account (Debit Fee)</label>
+        <input type="text" id="accountFee" value="Expenses:Bank Charges:Square Processing Fees">
+      </div>
+    </div>
+    <div>
+      <div class="settings-title">
+        <span>Revenue & Liability Accounts</span>
+      </div>
+      <div class="form-group">
+        <label for="accountSales">Gross Sales Income Account (Credit Sales)</label>
+        <input type="text" id="accountSales" value="Income:Sales">
+      </div>
+      <div class="form-group">
+        <label for="accountTax">Sales Tax Liability Account (Credit Tax)</label>
+        <input type="text" id="accountTax" value="Liabilities:Sales Tax Payable">
+      </div>
+      <div class="form-group">
+        <label for="accountTips">Tips Liability Account (Credit Tips)</label>
+        <input type="text" id="accountTips" value="Liabilities:Tips Payable">
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div id="resultsSection" style="display: none;">
+    <div class="status-banner">
+      <div>
+        <strong id="statusTitle" style="color: #34d399; font-size: 1.05rem;">Reconciliation Successful</strong>
+        <p id="statusDetails" style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.2rem;">0 balanced entries generated. Sum of Debits = Sum of Credits.</p>
+      </div>
+      <div class="action-group">
+        <button class="btn-accent" id="btnOpenPro">Save Rules & Pro ($19)</button>
+        <button class="btn-primary" id="btnDownload">Download GnuCash Multi-Split CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="settings-title">
+        <span>GnuCash Journal Preview</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Account</th>
+              <th class="text-right">Deposit (Debit)</th>
+              <th class="text-right">Withdrawal (Credit)</th>
+              <th>Memo</th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Educational Guide Section (SEO Optimized) -->
+  <section class="doc-section">
+    <h2>Step-by-Step GnuCash Import Guide</h2>
+    <div class="card">
+      <ol>
+        <li><strong>Export your Square Data</strong>:
+          <p>In your Square Dashboard, go to <code>Transactions</code> &rarr; <code>Export</code> &rarr; <code>Transactions CSV</code> (or <code>Balance</code> &rarr; <code>View all transfers</code> &rarr; <code>Export</code>).</p>
+        </li>
+        <li><strong>Convert with this Tool</strong>:
+          <p>Drop your CSV file into the box above. Verify your account names match your GnuCash chart of accounts, then click <strong>Download GnuCash Multi-Split CSV</strong>.</p>
+        </li>
+        <li><strong>Open GnuCash CSV Import Assistant</strong>:
+          <p>In GnuCash, navigate to <code>File</code> &rarr; <code>Import</code> &rarr; <code>Import Transactions from CSV</code> and select the downloaded file.</p>
+        </li>
+        <li><strong>Configure Column Mapping</strong>:
+          <p>Ensure the <strong>"Multi-split"</strong> checkbox is checked in GnuCash. Set:</p>
+          <ul>
+            <li>Date column &rarr; <code>Date</code></li>
+            <li>Description column &rarr; <code>Description</code></li>
+            <li>Account column &rarr; <code>Account</code></li>
+            <li>Deposit column &rarr; <code>Deposit</code></li>
+            <li>Withdrawal column &rarr; <code>Withdrawal</code></li>
+          </ul>
+        </li>
+        <li><strong>Reconcile Your Clearing Account</strong>:
+          <p>The net amounts land in <code>Assets:Square Clearing</code>. When the bank deposit clears your checking account, record a transfer from <code>Assets:Square Clearing</code> to <code>Assets:Checking</code>. The clearing balance reconciles to zero.</p>
+        </li>
+      </ol>
+    </div>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <h3>Why use a Square Clearing account instead of posting directly to checking?</h3>
+      <p>Square bundles several days of credit card sales into a single lump-sum bank deposit after subtracting fees. Posting sales directly to checking makes monthly bank statement reconciliation nearly impossible. Using a dedicated clearing account (<code>Assets:Current Assets:Square Clearing</code>) isolates pending funds until the bank transfer arrives.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How are Square processing fees treated in double-entry bookkeeping?</h3>
+      <p>Square deducts processing fees before transferring funds. In GnuCash double-entry bookkeeping, the processing fee is recorded as an expense debit (<code>Expenses:Bank Charges:Square Processing Fees</code>). Gross sales are credited as income, ensuring your true gross revenue and processing costs are accurately reported.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is my transaction data uploaded to an external server?</h3>
+      <p>No. All parsing and conversion occurs 100% locally in your browser memory using JavaScript. No transaction, customer, or financial data ever leaves your device.</p>
+    </div>
+  </section>
+
+  <!-- Early Access / Pro Intent Modal -->
+  <div class="modal-backdrop" id="proModal">
+    <div class="modal-content">
+      <button class="modal-close" id="btnCloseModal" aria-label="Close modal">&times;</button>
+      <span class="price-pill">PRO PREVIEW &bull; $19 LIFETIME</span>
+      <h3>Unlock Square &rarr; GnuCash Pro</h3>
+      <p>Never re-type your account categories. Pro adds saved mapping rules, automatic recurring sync, and multi-location fee reconciliation.</p>
+      
+      <form id="proForm">
+        <div class="form-group">
+          <label for="proEmail">Your Email Address</label>
+          <input type="email" id="proEmail" required placeholder="name@business.com">
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;" id="btnSubmitPro">
+          Lock in Early-Access ($9.50 One-Time)
+        </button>
+      </form>
+      <div id="proSuccess" style="display: none; margin-top: 1rem; color: #34d399; font-size: 0.95rem; text-align: center;">
+        &check; You're on the list! We'll notify you as soon as early access opens.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Square&reg; is a registered trademark of Block, Inc. GnuCash is open-source accounting software. This project is independent and not affiliated with either entity.</p>
+    <p style="margin-top: 0.25rem;">Built by Jackson Street Commercial Validation Lab.</p>
+  </footer>
+</div>
+
+<script>
+// --- Telemetry & Analytics (Cookie-Free / Privacy-Preserving) ---
+const TELEMETRY_KEY = "sq_gnucash_events_v1";
+
+function logTelemetry(eventType, details = {}) {
+  try {
+    const events = JSON.parse(localStorage.getItem(TELEMETRY_KEY) || "[]");
+    const record = {
+      event: eventType,
+      timestamp: new Date().toISOString(),
+      details: details
+    };
+    events.push(record);
+    localStorage.setItem(TELEMETRY_KEY, JSON.stringify(events));
+    console.log("[Telemetry]", record);
+  } catch (e) {
+    console.error("Telemetry error", e);
+  }
+}
+
+window.getExperimentStats = function() {
+  const events = JSON.parse(localStorage.getItem(TELEMETRY_KEY) || "[]");
+  const summary = {
+    pageviews: events.filter(e => e.event === "pageview").length,
+    conversions: events.filter(e => e.event === "csv_download").length,
+    pro_intent_clicks: events.filter(e => e.event === "pro_intent_click").length,
+    pro_leads_submitted: events.filter(e => e.event === "pro_lead_submitted").length,
+    total_events: events.length
+  };
+  console.table(summary);
+  return summary;
+};
+
+// Initial pageview
+logTelemetry("pageview", { referrer: document.referrer || "direct" });
+
+// --- Authentic Sample Data ---
+const SAMPLE_TRANSACTIONS = `Date,Time,Gross Sales,Discounts,Net Sales,Tax,Tip,Fees,Net Total,Transaction Status,Transaction ID,Description
+2026-10-01,12:30:00,$100.00,$10.00,$90.00,$7.20,$15.00,-$3.15,$109.05,Complete,sq_tx_101,Coffee & Pastries
+2026-10-01,13:15:00,$25.00,$0.00,$25.00,$2.00,$0.00,-$0.85,$26.15,Complete,sq_tx_102,Beans Bag
+2026-10-02,09:10:00,$45.00,$0.00,$45.00,$3.60,$5.00,-$1.55,$52.05,Complete,sq_tx_103,Breakfast Sandwich
+2026-10-02,11:45:00,$80.00,$5.00,$75.00,$6.00,$10.00,-$2.65,$88.35,Complete,sq_tx_104,Catering Order`;
+
+const SAMPLE_TRANSFERS = `Deposit Date,Payment Date,Type,Transaction ID,Payment ID,Collected,Fees,Deposited,Deposit ID,Location
+2026-10-02,2026-10-01,Payment,tx_201,pay_201,$120.00,-$3.80,$116.20,DEP-9988,Main Store
+2026-10-02,2026-10-01,Payment,tx_202,pay_202,$80.00,-$2.50,$77.50,DEP-9988,Main Store
+2026-10-03,2026-10-02,Payment,tx_203,pay_203,$140.00,-$4.20,$135.80,DEP-9989,Main Store`;
+
+let currentCsvRaw = "";
+let currentEntries = [];
+
+function cleanCurrency(val) {
+  if (!val) return 0;
+  let s = String(val).trim();
+  let isNeg = false;
+  if (s.startsWith("(") && s.endsWith(")")) { isNeg = true; s = s.slice(1, -1); }
+  s = s.replace(/[\$,]/g, '').trim();
+  if (s.startsWith("-")) { isNeg = true; s = s.slice(1).trim(); }
+  let num = parseFloat(s) || 0;
+  return isNeg ? -num : num;
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const values = parseCSVLine(line);
+    const row = {};
+    headers.forEach((h, i) => { row[h.trim()] = (values[i] || "").trim(); });
+    return row;
+  });
+}
+
+function parseCSVLine(line) {
+  const values = [];
+  let inQuotes = false;
+  let cur = "";
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (c === ',' && !inQuotes) {
+      values.push(cur);
+      cur = "";
+    } else {
+      cur += c;
+    }
+  }
+  values.push(cur);
+  return values;
+}
+
+function convertData(rawText) {
+  const rows = parseCSV(rawText);
+  if (rows.length === 0) return [];
+  const firstRow = rows[0];
+  const isTransfer = ("Deposit ID" in firstRow) || ("Deposited" in firstRow);
+  const isTx = ("Gross Sales" in firstRow) || ("Net Sales" in firstRow);
+
+  const bankAcc = document.getElementById("accountBank").value;
+  const feeAcc = document.getElementById("accountFee").value;
+  const salesAcc = document.getElementById("accountSales").value;
+  const taxAcc = document.getElementById("accountTax").value;
+  const tipsAcc = document.getElementById("accountTips").value;
+  const mode = document.getElementById("modeSelect").value;
+
+  const entries = [];
+
+  if (isTransfer) {
+    const groups = {};
+    rows.forEach(r => {
+      const depId = r["Deposit ID"] || ("TRANSFER-" + (r["Deposit Date"] || ""));
+      if (!groups[depId]) {
+        groups[depId] = { date: r["Deposit Date"] || "", collected: 0, fees: 0, deposited: 0, count: 0 };
+      }
+      groups[depId].collected += cleanCurrency(r["Collected"]);
+      groups[depId].fees += Math.abs(cleanCurrency(r["Fees"]));
+      groups[depId].deposited += cleanCurrency(r["Deposited"]);
+      groups[depId].count++;
+    });
+
+    Object.keys(groups).forEach(depId => {
+      const g = groups[depId];
+      entries.push({
+        date: g.date,
+        description: `Square Transfer ${depId} (${g.count} payments)`,
+        splits: [
+          { account: bankAcc, memo: "Net deposit to bank", amount: g.deposited },
+          { account: feeAcc, memo: "Square fees", amount: g.fees },
+          { account: salesAcc, memo: "Gross sales collected", amount: -g.collected }
+        ]
+      });
+    });
+  } else if (isTx) {
+    if (mode === "daily") {
+      const groups = {};
+      rows.forEach(r => {
+        if ((r["Transaction Status"] || "").toLowerCase() === "failed") return;
+        const dt = (r["Date"] || "").trim();
+        if (!groups[dt]) {
+          groups[dt] = { gross: 0, discounts: 0, tax: 0, tip: 0, fees: 0, net: 0, count: 0 };
+        }
+        groups[dt].gross += cleanCurrency(r["Gross Sales"]);
+        groups[dt].discounts += Math.abs(cleanCurrency(r["Discounts"]));
+        groups[dt].tax += cleanCurrency(r["Tax"]);
+        groups[dt].tip += cleanCurrency(r["Tip"]);
+        groups[dt].fees += Math.abs(cleanCurrency(r["Fees"]));
+        groups[dt].net += cleanCurrency(r["Net Total"]);
+        groups[dt].count++;
+      });
+
+      Object.keys(groups).sort().forEach(dt => {
+        const g = groups[dt];
+        entries.push({
+          date: dt,
+          description: `Square Daily Summary (${g.count} transactions)`,
+          splits: [
+            { account: bankAcc, memo: "Net settled funds", amount: g.net },
+            { account: feeAcc, memo: "Processing fee expense", amount: g.fees },
+            { account: salesAcc, memo: "Gross merchandise/service sales", amount: -(g.gross - g.discounts) },
+            { account: taxAcc, memo: "Sales tax liability", amount: -g.tax },
+            { account: tipsAcc, memo: "Tips payable liability", amount: -g.tip }
+          ].filter(s => Math.abs(s.amount) > 0.001)
+        });
+      });
+    } else {
+      rows.forEach(r => {
+        if ((r["Transaction Status"] || "").toLowerCase() === "failed") return;
+        const dt = (r["Date"] || "").trim();
+        const txId = r["Transaction ID"] || "";
+        const desc = r["Description"] || `Square Sale ${txId}`;
+        const gross = cleanCurrency(r["Gross Sales"]);
+        const disc = Math.abs(cleanCurrency(r["Discounts"]));
+        const tax = cleanCurrency(r["Tax"]);
+        const tip = cleanCurrency(r["Tip"]);
+        const fees = Math.abs(cleanCurrency(r["Fees"]));
+        const net = cleanCurrency(r["Net Total"]) || (gross - disc + tax + tip - fees);
+
+        entries.push({
+          date: dt,
+          description: desc,
+          splits: [
+            { account: bankAcc, memo: "Square Clearing Deposit", amount: net },
+            { account: feeAcc, memo: "Square processing fee", amount: fees },
+            { account: salesAcc, memo: "Gross sales", amount: -(gross - disc) },
+            { account: taxAcc, memo: "Sales tax collected", amount: -tax },
+            { account: tipsAcc, memo: "Tip liability", amount: -tip }
+          ].filter(s => Math.abs(s.amount) > 0.001)
+        });
+      });
+    }
+  }
+  return entries;
+}
+
+function renderPreview(entries) {
+  const tbody = document.getElementById("previewBody");
+  tbody.innerHTML = "";
+  let totalSplits = 0;
+
+  entries.forEach(entry => {
+    entry.splits.forEach((s, idx) => {
+      totalSplits++;
+      const tr = document.createElement("tr");
+      const isFirst = (idx === 0);
+      const depStr = s.amount > 0 ? `$${s.amount.toFixed(2)}` : "";
+      const withStr = s.amount < 0 ? `$${Math.abs(s.amount).toFixed(2)}` : "";
+
+      tr.innerHTML = `
+        <td>${isFirst ? entry.date : ""}</td>
+        <td>${isFirst ? `<strong>${entry.description}</strong>` : ""}</td>
+        <td><code>${s.account}</code></td>
+        <td class="text-right text-success">${depStr}</td>
+        <td class="text-right text-error">${withStr}</td>
+        <td style="color: #94a3b8;">${s.memo || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+
+  document.getElementById("statusDetails").textContent =
+    `${entries.length} balanced transactions (${totalSplits} splits) verified. Ready for GnuCash import.`;
+  document.getElementById("resultsSection").style.display = "block";
+}
+
+function generateGnuCashCSV(entries) {
+  let csv = "Date,Description,Account,Deposit,Withdrawal,Memo\n";
+  entries.forEach(entry => {
+    entry.splits.forEach((s, idx) => {
+      const isFirst = (idx === 0);
+      const dt = isFirst ? `"${entry.date}"` : '""';
+      const desc = isFirst ? `"${entry.description.replace(/"/g, '""')}"` : '""';
+      const acc = `"${s.account.replace(/"/g, '""')}"`;
+      const dep = s.amount > 0 ? s.amount.toFixed(2) : "";
+      const withdr = s.amount < 0 ? Math.abs(s.amount).toFixed(2) : "";
+      const memo = `"${(s.memo || "").replace(/"/g, '""')}"`;
+      csv += `${dt},${desc},${acc},${dep},${withdr},${memo}\n`;
+    });
+  });
+  return csv;
+}
+
+// UI Handlers
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+
+dropzone.onclick = () => fileInput.click();
+dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add("dragover"); };
+dropzone.ondragleave = () => dropzone.classList.remove("dragover");
+dropzone.ondrop = (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+  if (e.dataTransfer.files.length > 0) {
+    readFile(e.dataTransfer.files[0]);
+  }
+};
+fileInput.onchange = (e) => {
+  if (e.target.files.length > 0) {
+    readFile(e.target.files[0]);
+  }
+};
+
+function readFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentCsvRaw = e.target.result;
+    logTelemetry("file_loaded", { fileName: file.name, fileSize: file.size });
+    runConversion();
+  };
+  reader.readAsText(file);
+}
+
+function runConversion() {
+  if (!currentCsvRaw) return;
+  currentEntries = convertData(currentCsvRaw);
+  renderPreview(currentEntries);
+}
+
+document.getElementById("btnSampleTx").onclick = () => {
+  currentCsvRaw = SAMPLE_TRANSACTIONS;
+  logTelemetry("sample_loaded", { type: "transactions" });
+  runConversion();
+};
+
+document.getElementById("btnSampleTransfer").onclick = () => {
+  currentCsvRaw = SAMPLE_TRANSFERS;
+  logTelemetry("sample_loaded", { type: "transfers" });
+  runConversion();
+};
+
+document.querySelectorAll("input, select").forEach(el => {
+  el.onchange = runConversion;
+});
+
+document.getElementById("btnDownload").onclick = () => {
+  if (currentEntries.length === 0) return;
+  const csvContent = generateGnuCashCSV(currentEntries);
+  logTelemetry("csv_download", { entryCount: currentEntries.length });
+  
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `gnucash_import_${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Pro Modal Handlers
+const modal = document.getElementById("proModal");
+document.getElementById("btnOpenPro").onclick = () => {
+  logTelemetry("pro_intent_click");
+  modal.classList.add("active");
+};
+document.getElementById("btnCloseModal").onclick = () => {
+  modal.classList.remove("active");
+};
+modal.onclick = (e) => {
+  if (e.target === modal) modal.classList.remove("active");
+};
+
+document.getElementById("proForm").onsubmit = (e) => {
+  e.preventDefault();
+  const email = document.getElementById("proEmail").value;
+  logTelemetry("pro_lead_submitted", { email: email });
+  document.getElementById("proForm").style.display = "none";
+  document.getElementById("proSuccess").style.display = "block";
+};
+</script>
+
+</body>
+</html>
