@@ -22,577 +22,857 @@
   </script>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --border: #334155;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #38bdf8;
-      --primary-hover: #0369a1;
-      --accent: #f59e0b;
-      --accent-hover: #d97706;
-      --success: #10b981;
-      --warning: #f59e0b;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --card-subtle: #f1f5f9;
+      --border: #cbd5e1;
+      --border-subtle: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --primary: #0f172a;
+      --primary-hover: #1e293b;
+      --primary-fg: #ffffff;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --emerald: #047857;
+      --emerald-bg: #ecfdf5;
+      --emerald-border: #a7f3d0;
+      --error: #b91c1c;
+      --error-bg: #fef2f2;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --card: #141417;
+      --card-subtle: #1c1c21;
+      --border: #27272a;
+      --border-subtle: #1e1e24;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-subtle: #71717a;
+      --primary: #f4f4f5;
+      --primary-hover: #e4e4e7;
+      --primary-fg: #09090b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.1);
+      --emerald-border: rgba(16, 185, 129, 0.25);
       --error: #ef4444;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --error-bg: rgba(239, 68, 68, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: var(--font);
+      font-family: var(--font-sans);
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      padding: 2rem 1rem;
+      line-height: 1.5;
+      padding: 2.5rem 1rem 7rem 1rem;
+      transition: background-color 0.18s ease, color 0.18s ease;
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1040px;
       margin: 0 auto;
     }
 
-    header {
-      text-align: center;
+    /* Top Nav / Branding */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 2.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
     }
-
-    header h1 {
-      font-size: 2.2rem;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+    .brand-title {
+      font-size: 1.15rem;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    header p {
+    .btn-link {
+      background: none;
+      border: none;
       color: var(--text-muted);
-      font-size: 1.1rem;
-    }
-
-    .badge-privacy {
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      padding: 0.35rem 0.8rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-top: 0.75rem;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      transition: color 0.15s ease;
+    }
+    .btn-link:hover {
+      color: var(--text);
     }
 
+    /* Hero */
+    .hero {
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 680px;
+    }
+    .privacy-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border: 1px solid var(--emerald-border);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Cards */
     .card {
-      background: var(--card-bg);
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 0.75rem;
+      border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
     }
 
-    .dropzone {
+    /* Compact Upload Strip */
+    .upload-strip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.25rem;
+      align-items: center;
+      padding: 1.25rem;
       border: 2px dashed var(--border);
-      border-radius: 0.75rem;
-      padding: 2.5rem 1.5rem;
-      text-align: center;
+      border-radius: 10px;
+      background: var(--card);
+      transition: border-color 0.18s ease, background 0.18s ease;
       cursor: pointer;
-      transition: all 0.2s ease;
-      background: rgba(15, 23, 42, 0.4);
     }
-
-    .dropzone:hover, .dropzone.dragover {
-      border-color: var(--primary);
-      background: rgba(56, 189, 248, 0.05);
+    .upload-strip:hover, .upload-strip.dragover {
+      border-color: var(--accent);
+      background: var(--card-subtle);
     }
-
-    .dropzone h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #fff;
-      margin-top: 0.5rem;
-    }
-
-    .dropzone p {
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-    }
-
-    .sample-btn-group {
+    .upload-left {
       display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .upload-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+    .upload-text h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+    .upload-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .upload-buttons {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
       flex-wrap: wrap;
     }
 
     button {
       cursor: pointer;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       font-weight: 600;
-      border-radius: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 0.9rem;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       transition: all 0.15s ease;
     }
-
-    .btn-secondary {
-      background: #334155;
-      color: #f1f5f9;
+    .btn-outline {
+      background: var(--card);
+      border-color: var(--border);
+      color: var(--text);
     }
-    .btn-secondary:hover {
-      background: #475569;
+    .btn-outline:hover {
+      background: var(--card-subtle);
+      border-color: var(--text-subtle);
     }
-
-    .btn-primary {
+    .btn-solid {
       background: var(--primary);
-      color: #0f172a;
+      color: var(--primary-fg);
     }
-    .btn-primary:hover {
+    .btn-solid:hover {
       background: var(--primary-hover);
-      color: #fff;
     }
-
     .btn-accent {
       background: var(--accent);
-      color: #0f172a;
+      color: #ffffff;
     }
     .btn-accent:hover {
-      background: #b45309;
-      color: #fff;
+      background: var(--accent-hover);
     }
 
-    .grid-2 {
+    /* T-Account Balance Card */
+    .t-account-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr auto;
       gap: 1.5rem;
+      align-items: center;
     }
     @media (max-width: 768px) {
-      .grid-2 { grid-template-columns: 1fr; }
+      .t-account-card { grid-template-columns: 1fr; gap: 1rem; }
+      .upload-strip { grid-template-columns: 1fr; }
     }
-
-    .settings-title {
+    .t-side {
+      display: flex;
+      flex-direction: column;
+    }
+    .t-side-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text-subtle);
+      margin-bottom: 0.25rem;
+    }
+    .t-side-amount {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--text);
+    }
+    .t-side-subtext {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .balance-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--emerald-bg);
+      border: 1px solid var(--emerald-border);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .balance-badge span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--emerald);
+    }
+    .balance-badge strong {
+      font-family: var(--font-mono);
       font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: #e2e8f0;
+      color: var(--emerald);
+      font-variant-numeric: tabular-nums;
     }
 
-    .form-group {
-      margin-bottom: 0.85rem;
+    /* Drawer / Collapsible Mapping Panel */
+    .settings-drawer {
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: none;
     }
-    .form-group label {
+    .settings-drawer.open {
       display: block;
-      font-size: 0.85rem;
+    }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .drawer-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .grid-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .field-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
       color: var(--text-muted);
       margin-bottom: 0.25rem;
     }
-    .form-group input, .form-group select {
+    .field-group input, .field-group select {
       width: 100%;
-      background: #0f172a;
+      background: var(--card);
       border: 1px solid var(--border);
-      color: #f8fafc;
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.375rem;
-      font-size: 0.9rem;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 5px;
     }
 
-    .status-banner {
+    /* Ledger Table */
+    .ledger-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding: 1.25rem;
-      border-radius: 0.5rem;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--success);
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .action-group {
-      display: flex;
-      gap: 0.75rem;
       align-items: center;
-      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .ledger-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .ledger-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
 
-    .table-container {
-      max-height: 400px;
-      overflow-y: auto;
+    .table-wrapper {
       border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 0.75rem;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+      padding: 0.5rem;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.85rem;
       text-align: left;
     }
-
     th {
-      background: #0f172a;
+      background: var(--card-subtle);
       color: var(--text-muted);
-      padding: 0.65rem 0.75rem;
-      position: sticky;
-      top: 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    td {
-      padding: 0.65rem 0.75rem;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-    }
-
-    tr:nth-child(even) td {
-      background: rgba(15, 23, 42, 0.3);
-    }
-
-    .text-right { text-align: right; }
-    .text-success { color: var(--success); }
-    .text-error { color: var(--error); }
-
-    .doc-section {
-      margin-top: 3rem;
-    }
-    .doc-section h2 {
-      font-size: 1.6rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+      padding: 0.65rem 0.85rem;
       border-bottom: 1px solid var(--border);
     }
-    .doc-section h3 {
-      font-size: 1.2rem;
+    td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .text-right { text-align: right; }
+    .debit { color: var(--emerald); font-weight: 600; }
+    .credit { color: var(--text-muted); }
+
+    /* Transaction Row Accordion */
+    tr.tx-parent {
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    tr.tx-parent:hover {
+      background: var(--card-subtle);
+    }
+    tr.tx-parent.expanded {
+      background: var(--card-subtle);
       font-weight: 600;
-      color: #e2e8f0;
-      margin: 1.25rem 0 0.5rem 0;
     }
-    .doc-section p, .doc-section li {
-      color: #cbd5e1;
-      font-size: 0.95rem;
-      margin-bottom: 0.75rem;
+    .chevron {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      transition: transform 0.15s ease;
+      margin-right: 0.35rem;
+      color: var(--text-subtle);
     }
-    .doc-section ol, .doc-section ul {
-      padding-left: 1.5rem;
-      margin-bottom: 1.25rem;
+    tr.tx-parent.expanded .chevron {
+      transform: rotate(90deg);
     }
-    .doc-section code {
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--border);
-      padding: 0.2rem 0.4rem;
-      border-radius: 0.25rem;
-      font-family: monospace;
-      font-size: 0.9rem;
-      color: var(--primary);
+    tr.tx-split {
+      background: var(--bg);
+      font-size: 0.8rem;
+    }
+    tr.tx-split td {
+      padding-top: 0.35rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .split-indent {
+      padding-left: 2rem;
+      color: var(--text-muted);
     }
 
-    .faq-item {
-      background: var(--card-bg);
+    /* Sticky Bottom Reconciliation Bar */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+      z-index: 90;
+      transition: background 0.18s ease;
+    }
+    .sticky-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .sticky-stats {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .stat-chip {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .stat-chip strong {
+      color: var(--text);
+    }
+
+    /* Documentation Section */
+    .docs-section {
+      margin-top: 4rem;
+    }
+    .docs-section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .doc-step {
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 0.5rem;
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .doc-step h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--primary-fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+    .doc-step p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .doc-step code {
+      background: var(--card-subtle);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    /* FAQ */
+    .faq-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
       padding: 1.25rem;
       margin-bottom: 1rem;
     }
-    .faq-item h3 {
-      color: #fff;
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
+    .faq-block h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .faq-block p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    /* Modal Styles */
-    .modal-backdrop {
-      display: none;
+    /* Modal */
+    .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+      display: none;
       align-items: center;
       justify-content: center;
       padding: 1rem;
+      z-index: 1000;
     }
-    .modal-backdrop.active {
+    .modal-overlay.active {
       display: flex;
     }
-    .modal-content {
-      background: #1e293b;
+    .modal-card {
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      max-width: 500px;
+      border-radius: 12px;
+      max-width: 460px;
       width: 100%;
       padding: 2rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       position: relative;
     }
-    .modal-content h3 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .modal-content p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-    }
     .modal-close {
       position: absolute;
       top: 1rem;
       right: 1rem;
-      background: transparent;
+      background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       cursor: pointer;
-      padding: 0.25rem;
-      line-height: 1;
     }
-    .modal-close:hover {
-      color: #fff;
-    }
-    .price-pill {
-      display: inline-block;
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--accent);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 0.25rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
+    .modal-card h3 {
+      font-size: 1.25rem;
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 0.35rem;
+    }
+    .modal-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .modal-input {
+      width: 100%;
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
     }
 
     footer {
+      margin-top: 3rem;
       text-align: center;
-      margin-top: 4rem;
-      padding-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--text-subtle);
       border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      padding-top: 1.5rem;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <header>
-    <h1>Square → GnuCash Converter</h1>
-    <p>Convert authentic Square transaction and transfer exports into balanced, multi-split GnuCash journal entries.</p>
-    <div class="badge-privacy">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      100% Client-Side Processing • Zero Server Uploads • Financial Data Stays in Your Browser
+  <!-- Top Bar -->
+  <nav class="top-bar" aria-label="Main Navigation">
+    <div class="brand">
+      <div class="brand-mark">&Sigma;</div>
+      <span class="brand-title">Square &rarr; GnuCash</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn-link" id="btnToggleSettings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Account Mapping
+      </button>
+      <button class="btn-link" id="btnOpenProNav">
+        Save Rules ($19)
+      </button>
+      <button class="btn-link" id="btnThemeToggle" aria-label="Toggle theme">
+        <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <h1>Reconcile Square Sales into GnuCash</h1>
+    <p>Transform raw Square transaction and transfer CSV exports into balanced, multi-split journal entries. Isolates processing fees, sales taxes, tips, and bank deposits.</p>
+    <div class="privacy-tag">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      100% In-Browser &bull; Zero Server Uploads &bull; Private CPA Precision
     </div>
   </header>
 
-  <!-- Upload Card -->
-  <div class="card">
-    <div class="dropzone" id="dropzone">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="margin-bottom: 0.5rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <h2>Drop your Square CSV export here</h2>
-      <p>Supports authentic <strong>Transactions CSV</strong> and <strong>Balance / Transfers CSV</strong></p>
-      <input type="file" id="fileInput" accept=".csv" style="display: none;">
+  <!-- Account Mapping Drawer (Progressive Disclosure) -->
+  <div class="settings-drawer" id="settingsDrawer">
+    <div class="drawer-header">
+      <h2>Chart of Accounts Mapping</h2>
+      <button class="btn-link" id="btnCloseDrawer">Close</button>
     </div>
-    <div class="sample-btn-group">
-      <button class="btn-secondary" id="btnSampleTx">Load Sample: Square Transactions</button>
-      <button class="btn-secondary" id="btnSampleTransfer">Load Sample: Square Transfers</button>
-    </div>
-  </div>
-
-  <!-- Settings Grid -->
-  <div class="card grid-2">
-    <div>
-      <div class="settings-title">
-        <span>Reconciliation Mode</span>
-      </div>
-      <div class="form-group">
-        <label for="modeSelect">Entry Aggregation</label>
+    <div class="grid-fields">
+      <div class="field-group">
+        <label for="modeSelect">Reconciliation Mode</label>
         <select id="modeSelect">
-          <option value="daily" selected>Daily Settlement Batch (Recommended - Matches Bank Deposits)</option>
-          <option value="detailed">Per-Transaction Granular (Every Individual Sale)</option>
+          <option value="daily" selected>Daily Settlement Batch (Matches Bank Deposits)</option>
+          <option value="detailed">Per-Transaction Granular (Every Sale)</option>
         </select>
       </div>
-      <div class="form-group">
-        <label for="accountBank">Bank / Clearing Account (Debit Net Deposit)</label>
+      <div class="field-group">
+        <label for="accountBank">Bank / Clearing Asset (Debit)</label>
         <input type="text" id="accountBank" value="Assets:Current Assets:Square Clearing">
       </div>
-      <div class="form-group">
-        <label for="accountFee">Processing Fee Expense Account (Debit Fee)</label>
+      <div class="field-group">
+        <label for="accountFee">Processing Fee Expense (Debit)</label>
         <input type="text" id="accountFee" value="Expenses:Bank Charges:Square Processing Fees">
       </div>
-    </div>
-    <div>
-      <div class="settings-title">
-        <span>Revenue & Liability Accounts</span>
-      </div>
-      <div class="form-group">
-        <label for="accountSales">Gross Sales Income Account (Credit Sales)</label>
+      <div class="field-group">
+        <label for="accountSales">Gross Sales Income (Credit)</label>
         <input type="text" id="accountSales" value="Income:Sales">
       </div>
-      <div class="form-group">
-        <label for="accountTax">Sales Tax Liability Account (Credit Tax)</label>
+      <div class="field-group">
+        <label for="accountTax">Sales Tax Liability (Credit)</label>
         <input type="text" id="accountTax" value="Liabilities:Sales Tax Payable">
       </div>
-      <div class="form-group">
-        <label for="accountTips">Tips Liability Account (Credit Tips)</label>
+      <div class="field-group">
+        <label for="accountTips">Tips Liability (Credit)</label>
         <input type="text" id="accountTips" value="Liabilities:Tips Payable">
       </div>
     </div>
   </div>
 
-  <!-- Results Section -->
-  <div id="resultsSection" style="display: none;">
-    <div class="status-banner">
-      <div>
-        <strong id="statusTitle" style="color: #34d399; font-size: 1.05rem;">Reconciliation Successful</strong>
-        <p id="statusDetails" style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.2rem;">0 balanced entries generated. Sum of Debits = Sum of Credits.</p>
+  <!-- Compact Upload Strip -->
+  <div class="upload-strip" id="dropzone" role="button" tabindex="0" aria-label="Upload Square CSV file">
+    <div class="upload-left">
+      <div class="upload-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
-      <div class="action-group">
-        <button class="btn-accent" id="btnOpenPro">Save Rules & Pro ($19)</button>
-        <button class="btn-primary" id="btnDownload">Download GnuCash Multi-Split CSV</button>
+      <div class="upload-text">
+        <h2>Drop your Square CSV export here</h2>
+        <p>Supports <strong>Transactions.csv</strong> or <strong>Balance Transfers.csv</strong> directly from Square</p>
+      </div>
+    </div>
+    <div class="upload-buttons" onclick="event.stopPropagation()">
+      <button class="btn-outline" id="btnSampleTx">Sample Transactions</button>
+      <button class="btn-outline" id="btnSampleTransfer">Sample Transfers</button>
+      <button class="btn-solid" id="btnBrowseFile">Browse File</button>
+      <input type="file" id="fileInput" accept=".csv" style="display: none;">
+    </div>
+  </div>
+
+  <!-- T-Account Balance Card -->
+  <div class="t-account-card">
+    <div class="t-side">
+      <span class="t-side-label">Total Debits (Deposits + Fees)</span>
+      <span class="t-side-amount" id="totalDebitsDisplay">$275.60</span>
+      <span class="t-side-subtext">Cash Cleared + Merchant Processing Costs</span>
+    </div>
+    <div class="t-side">
+      <span class="t-side-label">Total Credits (Sales + Tax + Tips)</span>
+      <span class="t-side-amount" id="totalCreditsDisplay">$275.60</span>
+      <span class="t-side-subtext">Merchandise Revenue + Liabilities Collected</span>
+    </div>
+    <div class="balance-badge">
+      <span>Double-Entry Balance</span>
+      <strong id="imbalanceDisplay">&Delta; $0.00</strong>
+    </div>
+  </div>
+
+  <!-- Ledger Table Section -->
+  <section class="ledger-section" aria-label="GnuCash Journal Preview">
+    <div class="ledger-header">
+      <h2>GnuCash Multi-Split Journal Preview</h2>
+      <div class="ledger-controls">
+        <button class="btn-link" id="btnToggleAllRows">Expand All Splits</button>
       </div>
     </div>
 
-    <div class="card">
-      <div class="settings-title">
-        <span>GnuCash Journal Preview</span>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 140px;">Date</th>
+            <th>Description & Account Hierarchy</th>
+            <th class="text-right" style="width: 140px;">Deposit (Debit)</th>
+            <th class="text-right" style="width: 140px;">Withdrawal (Credit)</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Technical Documentation Guide (SEO) -->
+  <section class="docs-section">
+    <h2>Step-by-Step GnuCash Import Guide</h2>
+    <div class="doc-grid">
+      <div class="doc-step">
+        <h3><span class="step-num">1</span> Export Square CSV</h3>
+        <p>In Square Dashboard, go to <code>Transactions</code> &rarr; <code>Export</code> &rarr; <code>Transactions CSV</code>, or navigate to <code>Balance</code> &rarr; <code>View all transfers</code> to download settlement files.</p>
       </div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Account</th>
-              <th class="text-right">Deposit (Debit)</th>
-              <th class="text-right">Withdrawal (Credit)</th>
-              <th>Memo</th>
-            </tr>
-          </thead>
-          <tbody id="previewBody"></tbody>
-        </table>
+      <div class="doc-step">
+        <h3><span class="step-num">2</span> Convert & Reconcile</h3>
+        <p>Drop the raw file into this utility. Verify the T-account equation balances to &Delta; $0.00, then click <strong>Download GnuCash CSV</strong> in the bottom bar.</p>
+      </div>
+      <div class="doc-step">
+        <h3><span class="step-num">3</span> Import into GnuCash</h3>
+        <p>In GnuCash, select <code>File &rarr; Import &rarr; Import Transactions from CSV</code>. Check <strong>"Multi-split"</strong>, assign the column mappings, and apply.</p>
+      </div>
+    </div>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-block">
+      <h3>Why isolate a Square Clearing account instead of posting directly to Checking?</h3>
+      <p>Square bundles several days of transactions into lump-sum bank deposits after subtracting processing fees. Posting gross transactions straight into checking makes bank statement reconciliation nearly impossible. Routing to <code>Assets:Square Clearing</code> isolates unsettled revenue until the lump transfer posts.</p>
+    </div>
+    <div class="faq-block">
+      <h3>How are Square fees handled in double-entry bookkeeping?</h3>
+      <p>Square fees are an immediate cost of doing business. By booking gross sales to <code>Income:Sales</code> and debiting fees to <code>Expenses:Square Processing Fees</code>, your true gross revenue and total merchant costs remain 100% accurate on your profit and loss statement.</p>
+    </div>
+    <div class="faq-block">
+      <h3>Is my accounting data secure?</h3>
+      <p>Yes. This application runs entirely client-side using HTML5 and JavaScript. No financial records, sales amounts, or customer data ever touch an external server.</p>
+    </div>
+  </section>
+
+  <!-- Sticky Bottom Reconciliation Bar -->
+  <div class="sticky-bar">
+    <div class="sticky-inner">
+      <div class="sticky-stats">
+        <div class="stat-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="statTxCount"><strong>2</strong> transactions</span>
+        </div>
+        <div class="stat-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="color: var(--emerald); font-weight: 600;">Balanced (&Delta; $0.00)</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn-outline" id="btnOpenPro">Save Rules & Pro ($19)</button>
+        <button class="btn-solid" id="btnDownload">Download GnuCash CSV</button>
       </div>
     </div>
   </div>
 
-  <!-- Educational Guide Section (SEO Optimized) -->
-  <section class="doc-section">
-    <h2>Step-by-Step GnuCash Import Guide</h2>
-    <div class="card">
-      <ol>
-        <li><strong>Export your Square Data</strong>:
-          <p>In your Square Dashboard, go to <code>Transactions</code> &rarr; <code>Export</code> &rarr; <code>Transactions CSV</code> (or <code>Balance</code> &rarr; <code>View all transfers</code> &rarr; <code>Export</code>).</p>
-        </li>
-        <li><strong>Convert with this Tool</strong>:
-          <p>Drop your CSV file into the box above. Verify your account names match your GnuCash chart of accounts, then click <strong>Download GnuCash Multi-Split CSV</strong>.</p>
-        </li>
-        <li><strong>Open GnuCash CSV Import Assistant</strong>:
-          <p>In GnuCash, navigate to <code>File</code> &rarr; <code>Import</code> &rarr; <code>Import Transactions from CSV</code> and select the downloaded file.</p>
-        </li>
-        <li><strong>Configure Column Mapping</strong>:
-          <p>Ensure the <strong>"Multi-split"</strong> checkbox is checked in GnuCash. Set:</p>
-          <ul>
-            <li>Date column &rarr; <code>Date</code></li>
-            <li>Description column &rarr; <code>Description</code></li>
-            <li>Account column &rarr; <code>Account</code></li>
-            <li>Deposit column &rarr; <code>Deposit</code></li>
-            <li>Withdrawal column &rarr; <code>Withdrawal</code></li>
-          </ul>
-        </li>
-        <li><strong>Reconcile Your Clearing Account</strong>:
-          <p>The net amounts land in <code>Assets:Square Clearing</code>. When the bank deposit clears your checking account, record a transfer from <code>Assets:Square Clearing</code> to <code>Assets:Checking</code>. The clearing balance reconciles to zero.</p>
-        </li>
-      </ol>
-    </div>
-
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <h3>Why use a Square Clearing account instead of posting directly to checking?</h3>
-      <p>Square bundles several days of credit card sales into a single lump-sum bank deposit after subtracting fees. Posting sales directly to checking makes monthly bank statement reconciliation nearly impossible. Using a dedicated clearing account (<code>Assets:Current Assets:Square Clearing</code>) isolates pending funds until the bank transfer arrives.</p>
-    </div>
-    <div class="faq-item">
-      <h3>How are Square processing fees treated in double-entry bookkeeping?</h3>
-      <p>Square deducts processing fees before transferring funds. In GnuCash double-entry bookkeeping, the processing fee is recorded as an expense debit (<code>Expenses:Bank Charges:Square Processing Fees</code>). Gross sales are credited as income, ensuring your true gross revenue and processing costs are accurately reported.</p>
-    </div>
-    <div class="faq-item">
-      <h3>Is my transaction data uploaded to an external server?</h3>
-      <p>No. All parsing and conversion occurs 100% locally in your browser memory using JavaScript. No transaction, customer, or financial data ever leaves your device.</p>
-    </div>
-  </section>
-
   <!-- Early Access / Pro Intent Modal -->
-  <div class="modal-backdrop" id="proModal">
-    <div class="modal-content">
+  <div class="modal-overlay" id="proModal">
+    <div class="modal-card">
       <button class="modal-close" id="btnCloseModal" aria-label="Close modal">&times;</button>
-      <span class="price-pill">PRO PREVIEW &bull; $19 LIFETIME</span>
-      <h3>Unlock Square &rarr; GnuCash Pro</h3>
-      <p>Never re-type your account categories. Pro adds saved mapping rules, automatic recurring sync, and multi-location fee reconciliation.</p>
-      
+      <span class="privacy-tag" style="margin-bottom: 0.75rem;">EARLY ACCESS &bull; $19 LIFETIME</span>
+      <h3>Save Mapping Rules in Pro</h3>
+      <p>Never re-configure accounts. Pro unlocks saved custom chart of accounts mapping, recurring automated sync, and multi-location fee tagging.</p>
       <form id="proForm">
-        <div class="form-group">
-          <label for="proEmail">Your Email Address</label>
-          <input type="email" id="proEmail" required placeholder="name@business.com">
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;" id="btnSubmitPro">
-          Lock in Early-Access ($9.50 One-Time)
+        <label for="proEmail" style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem;">Email Address</label>
+        <input type="email" id="proEmail" class="modal-input" required placeholder="cpa@business.com">
+        <button type="submit" class="btn-solid" style="width: 100%; justify-content: center;">
+          Lock in Early-Bird Access ($9.50)
         </button>
-        <p style="font-size: 0.8rem; margin-top: 0.75rem; color: var(--text-muted); text-align: center;">
-          Strict privacy blocker? Email directly: <a href="mailto:experiments@4ourenterprises.me?subject=Square%20to%20GnuCash%20Pro%20Early%20Access" style="color: var(--primary); text-decoration: underline;">experiments@4ourenterprises.me</a>
+        <p style="font-size: 0.75rem; margin-top: 0.75rem; color: var(--text-subtle); text-align: center;">
+          Privacy blocker active? Email directly: <a href="mailto:experiments@4ourenterprises.me?subject=Square%20GnuCash%20Pro" style="color: var(--accent); text-decoration: underline;">experiments@4ourenterprises.me</a>
         </p>
       </form>
-      <div id="proSuccess" style="display: none; margin-top: 1rem; color: #34d399; font-size: 0.95rem; text-align: center;">
-        &check; You're on the list! We'll notify you as soon as early access opens.
+      <div id="proSuccess" style="display: none; margin-top: 1rem; color: var(--emerald); font-size: 0.9rem; text-align: center; font-weight: 600;">
+        &check; You're on the early-access list! We'll reach out as soon as rules save is live.
       </div>
     </div>
   </div>
 
   <footer>
-    <p>Square&reg; is a registered trademark of Block, Inc. GnuCash is open-source accounting software. This project is independent and not affiliated with either entity.</p>
-    <p style="margin-top: 0.25rem;">Built by Jackson Street Commercial Validation Lab.</p>
+    <p>Square&reg; is a registered trademark of Block, Inc. GnuCash is open-source accounting software. This project is independent.</p>
+    <p style="margin-top: 0.25rem;">Jackson Street Commercial Validation Lab.</p>
   </footer>
 </div>
 
 <script>
-// --- Telemetry & Analytics (Cookie-Free / Privacy-Preserving) ---
-const TELEMETRY_KEY = "sq_gnucash_events_v1";
-
+// --- Telemetry ---
+const TELEMETRY_KEY = "sq_gnucash_events_v2";
 function logTelemetry(eventType, details = {}) {
   try {
     const events = JSON.parse(localStorage.getItem(TELEMETRY_KEY) || "[]");
-    const record = {
-      event: eventType,
-      timestamp: new Date().toISOString(),
-      details: details
-    };
-    events.push(record);
+    events.push({ event: eventType, timestamp: new Date().toISOString(), details });
     localStorage.setItem(TELEMETRY_KEY, JSON.stringify(events));
-    console.log("[Telemetry]", record);
-  } catch (e) {
-    console.error("Telemetry error", e);
-  }
+  } catch (e) {}
 }
-
-window.getExperimentStats = function() {
-  const events = JSON.parse(localStorage.getItem(TELEMETRY_KEY) || "[]");
-  const summary = {
-    pageviews: events.filter(e => e.event === "pageview").length,
-    conversions: events.filter(e => e.event === "csv_download").length,
-    pro_intent_clicks: events.filter(e => e.event === "pro_intent_click").length,
-    pro_leads_submitted: events.filter(e => e.event === "pro_lead_submitted").length,
-    total_events: events.length
-  };
-  console.table(summary);
-  return summary;
-};
-
-// Initial pageview
 logTelemetry("pageview", { referrer: document.referrer || "direct" });
 
-// --- Authentic Sample Data ---
+// --- Sample Data ---
 const SAMPLE_TRANSACTIONS = `Date,Time,Gross Sales,Discounts,Net Sales,Tax,Tip,Fees,Net Total,Transaction Status,Transaction ID,Description
 2026-10-01,12:30:00,$100.00,$10.00,$90.00,$7.20,$15.00,-$3.15,$109.05,Complete,sq_tx_101,Coffee & Pastries
 2026-10-01,13:15:00,$25.00,$0.00,$25.00,$2.00,$0.00,-$0.85,$26.15,Complete,sq_tx_102,Beans Bag
@@ -604,8 +884,9 @@ const SAMPLE_TRANSFERS = `Deposit Date,Payment Date,Type,Transaction ID,Payment 
 2026-10-02,2026-10-01,Payment,tx_202,pay_202,$80.00,-$2.50,$77.50,DEP-9988,Main Store
 2026-10-03,2026-10-02,Payment,tx_203,pay_203,$140.00,-$4.20,$135.80,DEP-9989,Main Store`;
 
-let currentCsvRaw = "";
+let currentCsvRaw = SAMPLE_TRANSACTIONS;
 let currentEntries = [];
+let allExpanded = false;
 
 function cleanCurrency(val) {
   if (!val) return 0;
@@ -616,18 +897,6 @@ function cleanCurrency(val) {
   if (s.startsWith("-")) { isNeg = true; s = s.slice(1).trim(); }
   let num = parseFloat(s) || 0;
   return isNeg ? -num : num;
-}
-
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = parseCSVLine(lines[0]);
-  return lines.slice(1).map(line => {
-    const values = parseCSVLine(line);
-    const row = {};
-    headers.forEach((h, i) => { row[h.trim()] = (values[i] || "").trim(); });
-    return row;
-  });
 }
 
 function parseCSVLine(line) {
@@ -648,6 +917,18 @@ function parseCSVLine(line) {
   }
   values.push(cur);
   return values;
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const values = parseCSVLine(line);
+    const row = {};
+    headers.forEach((h, i) => { row[h.trim()] = (values[i] || "").trim(); });
+    return row;
+  });
 }
 
 function convertData(rawText) {
@@ -684,9 +965,11 @@ function convertData(rawText) {
       entries.push({
         date: g.date,
         description: `Square Transfer ${depId} (${g.count} payments)`,
+        netDeposited: g.deposited,
+        fees: g.fees,
         splits: [
           { account: bankAcc, memo: "Net deposit to bank", amount: g.deposited },
-          { account: feeAcc, memo: "Square fees", amount: g.fees },
+          { account: feeAcc, memo: "Square processing fee", amount: g.fees },
           { account: salesAcc, memo: "Gross sales collected", amount: -g.collected }
         ]
       });
@@ -713,13 +996,15 @@ function convertData(rawText) {
         const g = groups[dt];
         entries.push({
           date: dt,
-          description: `Square Daily Summary (${g.count} transactions)`,
+          description: `Square Settlement Batch (${g.count} transactions)`,
+          netDeposited: g.net,
+          fees: g.fees,
           splits: [
             { account: bankAcc, memo: "Net settled funds", amount: g.net },
-            { account: feeAcc, memo: "Processing fee expense", amount: g.fees },
-            { account: salesAcc, memo: "Gross merchandise/service sales", amount: -(g.gross - g.discounts) },
-            { account: taxAcc, memo: "Sales tax liability", amount: -g.tax },
-            { account: tipsAcc, memo: "Tips payable liability", amount: -g.tip }
+            { account: feeAcc, memo: "Square processing fee", amount: g.fees },
+            { account: salesAcc, memo: "Gross sales revenue", amount: -(g.gross - g.discounts) },
+            { account: taxAcc, memo: "Sales tax payable", amount: -g.tax },
+            { account: tipsAcc, memo: "Staff tips payable", amount: -g.tip }
           ].filter(s => Math.abs(s.amount) > 0.001)
         });
       });
@@ -739,11 +1024,13 @@ function convertData(rawText) {
         entries.push({
           date: dt,
           description: desc,
+          netDeposited: net,
+          fees: fees,
           splits: [
             { account: bankAcc, memo: "Square Clearing Deposit", amount: net },
             { account: feeAcc, memo: "Square processing fee", amount: fees },
-            { account: salesAcc, memo: "Gross sales", amount: -(gross - disc) },
-            { account: taxAcc, memo: "Sales tax collected", amount: -tax },
+            { account: salesAcc, memo: "Gross sales revenue", amount: -(gross - disc) },
+            { account: taxAcc, memo: "Sales tax liability", amount: -tax },
             { account: tipsAcc, memo: "Tip liability", amount: -tip }
           ].filter(s => Math.abs(s.amount) > 0.001)
         });
@@ -753,34 +1040,69 @@ function convertData(rawText) {
   return entries;
 }
 
-function renderPreview(entries) {
-  const tbody = document.getElementById("previewBody");
+function renderLedger(entries) {
+  const tbody = document.getElementById("ledgerBody");
   tbody.innerHTML = "";
-  let totalSplits = 0;
+  let totalDebits = 0;
+  let totalCredits = 0;
 
-  entries.forEach(entry => {
-    entry.splits.forEach((s, idx) => {
-      totalSplits++;
-      const tr = document.createElement("tr");
-      const isFirst = (idx === 0);
+  entries.forEach((entry, eIdx) => {
+    let entryDebits = 0;
+    let entryCredits = 0;
+    entry.splits.forEach(s => {
+      if (s.amount > 0) { entryDebits += s.amount; totalDebits += s.amount; }
+      else { entryCredits += Math.abs(s.amount); totalCredits += Math.abs(s.amount); }
+    });
+
+    // Parent summary row
+    const trParent = document.createElement("tr");
+    trParent.className = `tx-parent ${allExpanded ? "expanded" : ""}`;
+    trParent.dataset.index = eIdx;
+    trParent.innerHTML = `
+      <td class="mono">
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        ${entry.date}
+      </td>
+      <td><strong>${entry.description}</strong> <span style="font-size: 0.75rem; color: var(--text-subtle);">(${entry.splits.length} splits)</span></td>
+      <td class="text-right mono debit">$${entryDebits.toFixed(2)}</td>
+      <td class="text-right mono credit">$${entryCredits.toFixed(2)}</td>
+    `;
+    tbody.appendChild(trParent);
+
+    // Child split rows
+    entry.splits.forEach(s => {
+      const trSplit = document.createElement("tr");
+      trSplit.className = `tx-split split-of-${eIdx}`;
+      trSplit.style.display = allExpanded ? "table-row" : "none";
       const depStr = s.amount > 0 ? `$${s.amount.toFixed(2)}` : "";
       const withStr = s.amount < 0 ? `$${Math.abs(s.amount).toFixed(2)}` : "";
 
-      tr.innerHTML = `
-        <td>${isFirst ? entry.date : ""}</td>
-        <td>${isFirst ? `<strong>${entry.description}</strong>` : ""}</td>
-        <td><code>${s.account}</code></td>
-        <td class="text-right text-success">${depStr}</td>
-        <td class="text-right text-error">${withStr}</td>
-        <td style="color: #94a3b8;">${s.memo || ""}</td>
+      trSplit.innerHTML = `
+        <td class="mono" style="color: var(--text-subtle);"></td>
+        <td class="split-indent">
+          <span class="mono">${s.account}</span>
+          <span style="font-size: 0.75rem; color: var(--text-subtle); margin-left: 0.5rem;">&bull; ${s.memo}</span>
+        </td>
+        <td class="text-right mono debit">${depStr}</td>
+        <td class="text-right mono credit">${withStr}</td>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(trSplit);
     });
+
+    trParent.onclick = () => {
+      const isExpanded = trParent.classList.toggle("expanded");
+      document.querySelectorAll(`.split-of-${eIdx}`).forEach(r => {
+        r.style.display = isExpanded ? "table-row" : "none";
+      });
+    };
   });
 
-  document.getElementById("statusDetails").textContent =
-    `${entries.length} balanced transactions (${totalSplits} splits) verified. Ready for GnuCash import.`;
-  document.getElementById("resultsSection").style.display = "block";
+  // Update T-Account and stats
+  document.getElementById("totalDebitsDisplay").textContent = `$${totalDebits.toFixed(2)}`;
+  document.getElementById("totalCreditsDisplay").textContent = `$${totalCredits.toFixed(2)}`;
+  const delta = Math.abs(totalDebits - totalCredits);
+  document.getElementById("imbalanceDisplay").textContent = delta < 0.01 ? "Δ $0.00" : `Imbalance: $${delta.toFixed(2)}`;
+  document.getElementById("statTxCount").innerHTML = `<strong>${entries.length}</strong> transactions`;
 }
 
 function generateGnuCashCSV(entries) {
@@ -801,92 +1123,116 @@ function generateGnuCashCSV(entries) {
 }
 
 // UI Handlers
+function runConversion() {
+  if (!currentCsvRaw) return;
+  currentEntries = convertData(currentCsvRaw);
+  renderLedger(currentEntries);
+}
+
+// Expand / Collapse All
+document.getElementById("btnToggleAllRows").onclick = () => {
+  allExpanded = !allExpanded;
+  document.getElementById("btnToggleAllRows").textContent = allExpanded ? "Collapse All Splits" : "Expand All Splits";
+  document.querySelectorAll(".tx-parent").forEach(p => p.classList.toggle("expanded", allExpanded));
+  document.querySelectorAll(".tx-split").forEach(s => s.style.display = allExpanded ? "table-row" : "none");
+};
+
+// Drawer Toggle
+document.getElementById("btnToggleSettings").onclick = () => {
+  document.getElementById("settingsDrawer").classList.toggle("open");
+};
+document.getElementById("btnCloseDrawer").onclick = () => {
+  document.getElementById("settingsDrawer").classList.remove("open");
+};
+document.querySelectorAll(".field-group input, .field-group select").forEach(el => {
+  el.onchange = runConversion;
+});
+
+// Dropzone & File browse
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
-
+document.getElementById("btnBrowseFile").onclick = (e) => {
+  e.stopPropagation();
+  fileInput.click();
+};
 dropzone.onclick = () => fileInput.click();
 dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add("dragover"); };
 dropzone.ondragleave = () => dropzone.classList.remove("dragover");
 dropzone.ondrop = (e) => {
   e.preventDefault();
   dropzone.classList.remove("dragover");
-  if (e.dataTransfer.files.length > 0) {
-    readFile(e.dataTransfer.files[0]);
-  }
+  if (e.dataTransfer.files.length > 0) readFile(e.dataTransfer.files[0]);
 };
 fileInput.onchange = (e) => {
-  if (e.target.files.length > 0) {
-    readFile(e.target.files[0]);
-  }
+  if (e.target.files.length > 0) readFile(e.target.files[0]);
 };
 
 function readFile(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
     currentCsvRaw = e.target.result;
-    logTelemetry("file_loaded", { fileName: file.name, fileSize: file.size });
+    logTelemetry("file_uploaded", { name: file.name, size: file.size });
     runConversion();
   };
   reader.readAsText(file);
 }
 
-function runConversion() {
-  if (!currentCsvRaw) return;
-  currentEntries = convertData(currentCsvRaw);
-  renderPreview(currentEntries);
-}
-
-document.getElementById("btnSampleTx").onclick = () => {
+// Samples
+document.getElementById("btnSampleTx").onclick = (e) => {
+  e.stopPropagation();
   currentCsvRaw = SAMPLE_TRANSACTIONS;
   logTelemetry("sample_loaded", { type: "transactions" });
   runConversion();
 };
-
-document.getElementById("btnSampleTransfer").onclick = () => {
+document.getElementById("btnSampleTransfer").onclick = (e) => {
+  e.stopPropagation();
   currentCsvRaw = SAMPLE_TRANSFERS;
   logTelemetry("sample_loaded", { type: "transfers" });
   runConversion();
 };
 
-document.querySelectorAll("input, select").forEach(el => {
-  el.onchange = runConversion;
-});
-
+// Download
 document.getElementById("btnDownload").onclick = () => {
   if (currentEntries.length === 0) return;
   const csvContent = generateGnuCashCSV(currentEntries);
-  logTelemetry("csv_download", { entryCount: currentEntries.length });
-  
+  logTelemetry("csv_download", { count: currentEntries.length });
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", `gnucash_import_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute("download", `gnucash_reconciled_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
-// Pro Modal Handlers
-const modal = document.getElementById("proModal");
-document.getElementById("btnOpenPro").onclick = () => {
-  logTelemetry("pro_intent_click");
-  modal.classList.add("active");
-};
-document.getElementById("btnCloseModal").onclick = () => {
-  modal.classList.remove("active");
-};
-modal.onclick = (e) => {
-  if (e.target === modal) modal.classList.remove("active");
+// Theme toggle
+const themeBtn = document.getElementById("btnThemeToggle");
+let currentTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", currentTheme);
+themeBtn.onclick = () => {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", currentTheme);
+  localStorage.setItem("theme", currentTheme);
 };
 
+// Pro Modal
+const modal = document.getElementById("proModal");
+const openModal = () => { logTelemetry("pro_intent_click"); modal.classList.add("active"); };
+document.getElementById("btnOpenPro").onclick = openModal;
+document.getElementById("btnOpenProNav").onclick = openModal;
+document.getElementById("btnCloseModal").onclick = () => modal.classList.remove("active");
+modal.onclick = (e) => { if (e.target === modal) modal.classList.remove("active"); };
 document.getElementById("proForm").onsubmit = (e) => {
   e.preventDefault();
   const email = document.getElementById("proEmail").value;
-  logTelemetry("pro_lead_submitted", { email: email });
+  logTelemetry("pro_lead_submitted", { email });
   document.getElementById("proForm").style.display = "none";
   document.getElementById("proSuccess").style.display = "block";
 };
+
+// Initial run
+runConversion();
 </script>
 
 </body>
