@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Square to GnuCash Reconciliation Converter | Free CSV Import Tool</title>
-  <meta name="description" content="Convert authentic Square transaction and transfer CSV exports into balanced, multi-split GnuCash journal entries. Free, 100% client-side, zero server uploads.">
+  <title>Square to GnuCash Reconciliation Studio | Double-Entry CSV Converter</title>
+  <meta name="description" content="Dribbble-grade Square to GnuCash multi-split reconciliation tool. Reconciles sales, merchant fees, sales tax liabilities, and bank deposits with 100% browser-based double-entry precision.">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Square to GnuCash Converter",
+    "name": "Square to GnuCash Reconciliation Studio",
     "operatingSystem": "All",
     "applicationCategory": "FinanceApplication",
     "offers": {
@@ -22,401 +22,721 @@
   </script>
   <style>
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --card-subtle: #f1f5f9;
-      --border: #cbd5e1;
+      --canvas-bg: #f8fafc;
+      --surface-card: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --surface-inset: #f8fafc;
       --border-subtle: #e2e8f0;
-      --text: #0f172a;
+      --border-strong: #cbd5e1;
+      --text-heading: #0f172a;
+      --text-body: #334155;
       --text-muted: #475569;
-      --text-subtle: #64748b;
-      --primary: #0f172a;
-      --primary-hover: #1e293b;
-      --primary-fg: #ffffff;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --emerald: #047857;
-      --emerald-bg: #ecfdf5;
-      --emerald-border: #a7f3d0;
-      --error: #b91c1c;
-      --error-bg: #fef2f2;
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --text-dim: #64748b;
+      
+      /* Primary CTA Warm Terracotta (WCAG AA compliant > 4.6:1 on white) */
+      --accent-coral: #c2410c;
+      --accent-coral-hover: #9a3412;
+      --accent-coral-subtle: #fff7ed;
+      --accent-coral-border: #fdba74;
+      
+      /* Financial Emerald / Teal (WCAG AA compliant > 4.8:1 on white) */
+      --accent-teal: #0f766e;
+      --accent-teal-dark: #115e59;
+      --accent-teal-subtle: #f0fdfa;
+      --accent-teal-border: #99f6e4;
+      
+      /* Auxiliary Slate */
+      --slate-segment: #64748b;
+      --slate-subtle: #f1f5f9;
+      
+      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      --card-shadow-hover: 0 8px 18px rgba(15, 23, 42, 0.08);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
 
     [data-theme="dark"] {
-      --bg: #09090b;
-      --card: #141417;
-      --card-subtle: #1c1c21;
-      --border: #27272a;
-      --border-subtle: #1e1e24;
-      --text: #f4f4f5;
-      --text-muted: #a1a1aa;
-      --text-subtle: #71717a;
-      --primary: #f4f4f5;
-      --primary-hover: #e4e4e7;
-      --primary-fg: #09090b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --emerald: #10b981;
-      --emerald-bg: rgba(16, 185, 129, 0.1);
-      --emerald-border: rgba(16, 185, 129, 0.25);
-      --error: #ef4444;
-      --error-bg: rgba(239, 68, 68, 0.1);
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+      --canvas-bg: #0b0f17;
+      --surface-card: #131b26;
+      --surface-subtle: #1a2434;
+      --surface-inset: #0e1520;
+      --border-subtle: #233147;
+      --border-strong: #334460;
+      --text-heading: #f8fafc;
+      --text-body: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-dim: #94a3b8;
+      
+      --accent-coral: #ea580c;
+      --accent-coral-hover: #f97316;
+      --accent-coral-subtle: rgba(234, 88, 12, 0.16);
+      --accent-coral-border: rgba(234, 88, 12, 0.35);
+      
+      --accent-teal: #14b8a6;
+      --accent-teal-dark: #2dd4bf;
+      --accent-teal-subtle: rgba(20, 184, 166, 0.16);
+      --accent-teal-border: rgba(20, 184, 166, 0.3);
+      
+      --slate-segment: #94a3b8;
+      --slate-subtle: #1e293b;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      --card-shadow-hover: 0 8px 18px rgba(0, 0, 0, 0.6);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--font-sans);
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--canvas-bg);
+      color: var(--text-body);
+      font-size: 0.925rem;
       line-height: 1.5;
-      padding: 2.5rem 1rem 7rem 1rem;
-      transition: background-color 0.18s ease, color 0.18s ease;
+      padding: 1.5rem 1.5rem 7.5rem 1.5rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 1040px;
+      max-width: 1140px;
       margin: 0 auto;
     }
 
-    /* Top Nav / Branding */
-    .top-bar {
+    /* Top Navigation Bar (Image 1 Style) */
+    .top-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
     }
-    .brand {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.9rem;
     }
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      background: var(--primary);
-      color: var(--primary-fg);
+    .brand-symbol {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
+      border-radius: 10px;
       font-weight: 800;
-      font-size: 0.85rem;
-    }
-    .brand-title {
       font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
     }
-    .top-actions {
+    .brand-meta h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-heading);
+      line-height: 1.2;
+    }
+    .brand-meta span {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .nav-actions {
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
 
-    .btn-link {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: color 0.15s ease;
-    }
-    .btn-link:hover {
-      color: var(--text);
-    }
-
-    /* Hero */
-    .hero {
-      margin-bottom: 2rem;
-    }
-    .hero h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 680px;
-    }
-    .privacy-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-top: 0.75rem;
-      background: var(--emerald-bg);
-      color: var(--emerald);
-      border: 1px solid var(--emerald-border);
-      padding: 0.25rem 0.65rem;
+    /* Pills & Buttons */
+    .btn-coral-pill {
+      background: var(--accent-coral);
+      color: #ffffff;
+      border: 1px solid transparent;
       border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    /* Cards */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Compact Upload Strip */
-    .upload-strip {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1.25rem;
-      align-items: center;
-      padding: 1.25rem;
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      background: var(--card);
-      transition: border-color 0.18s ease, background 0.18s ease;
-      cursor: pointer;
-    }
-    .upload-strip:hover, .upload-strip.dragover {
-      border-color: var(--accent);
-      background: var(--card-subtle);
-    }
-    .upload-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .upload-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      background: var(--card-subtle);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-      flex-shrink: 0;
-    }
-    .upload-text h2 {
-      font-size: 1.05rem;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.875rem;
       font-weight: 700;
-      margin-bottom: 0.15rem;
-    }
-    .upload-text p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    .upload-buttons {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    button {
       cursor: pointer;
-      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .btn-coral-pill:hover {
+      background: var(--accent-coral-hover);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 0.5rem 0.95rem;
       font-size: 0.875rem;
       font-weight: 600;
-      border-radius: 6px;
-      padding: 0.5rem 0.9rem;
-      border: 1px solid transparent;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      transition: all 0.15s ease;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
-    .btn-outline {
-      background: var(--card);
-      border-color: var(--border);
-      color: var(--text);
+    .btn-ghost:hover {
+      background: var(--surface-subtle);
+      color: var(--text-heading);
+      border-color: var(--border-strong);
     }
-    .btn-outline:hover {
-      background: var(--card-subtle);
-      border-color: var(--text-subtle);
-    }
-    .btn-solid {
-      background: var(--primary);
-      color: var(--primary-fg);
-    }
-    .btn-solid:hover {
-      background: var(--primary-hover);
-    }
-    .btn-accent {
-      background: var(--accent);
-      color: #ffffff;
-    }
-    .btn-accent:hover {
-      background: var(--accent-hover);
-    }
-
-    /* T-Account Balance Card */
-    .t-account-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 1.5rem;
-      align-items: center;
-    }
-    @media (max-width: 768px) {
-      .t-account-card { grid-template-columns: 1fr; gap: 1rem; }
-      .upload-strip { grid-template-columns: 1fr; }
-    }
-    .t-side {
+    .icon-btn {
+      width: 36px;
+      height: 36px;
       display: flex;
-      flex-direction: column;
-    }
-    .t-side-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--text-subtle);
-      margin-bottom: 0.25rem;
-    }
-    .t-side-amount {
-      font-family: var(--font-mono);
-      font-size: 1.4rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums lining-nums;
-      color: var(--text);
-    }
-    .t-side-subtext {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    .balance-badge {
-      display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: var(--emerald-bg);
-      border: 1px solid var(--emerald-border);
-      padding: 0.6rem 1rem;
       border-radius: 8px;
-      text-align: center;
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .balance-badge span {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--emerald);
-    }
-    .balance-badge strong {
-      font-family: var(--font-mono);
-      font-size: 1.1rem;
-      color: var(--emerald);
-      font-variant-numeric: tabular-nums;
+    .icon-btn:hover {
+      color: var(--text-heading);
+      border-color: var(--border-strong);
     }
 
-    /* Drawer / Collapsible Mapping Panel */
-    .settings-drawer {
-      background: var(--card-subtle);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-      display: none;
+    /* Section 1: Balance & Revenue Composition Card (Image 2 Reference) */
+    .dashboard-hero-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
     }
-    .settings-drawer.open {
-      display: block;
-    }
-    .drawer-header {
+    .hero-top-metrics {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
     }
-    .drawer-header h2 {
-      font-size: 0.95rem;
+    .metric-duo {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .metric-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .metric-label {
+      font-size: 0.85rem;
       font-weight: 700;
-      color: var(--text);
-    }
-    .grid-fields {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-    .field-group label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
       color: var(--text-muted);
       margin-bottom: 0.25rem;
     }
-    .field-group input, .field-group select {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
+    .metric-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-heading);
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      padding: 0.45rem 0.65rem;
-      border-radius: 5px;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .status-badge-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--accent-teal-subtle);
+      color: var(--accent-teal);
+      border: 1px solid var(--accent-teal-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 700;
     }
 
-    /* Ledger Table */
-    .ledger-header {
+    /* Segmented Revenue Flow Slider (Image 2 Credit Slider Reference) */
+    .utilization-section {
+      padding-top: 1.5rem;
+    }
+    .utilization-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.75rem;
     }
-    .ledger-header h2 {
-      font-size: 1.15rem;
+    .utilization-title {
+      font-size: 1rem;
       font-weight: 700;
-      letter-spacing: -0.01em;
+      color: var(--text-heading);
     }
-    .ledger-controls {
+    .net-percent-pill {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-teal-dark);
+      background: var(--accent-teal-subtle);
+      border: 1px solid var(--accent-teal-border);
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+    }
+    .segmented-track {
+      width: 100%;
+      height: 14px;
+      background: var(--surface-subtle);
+      border-radius: 9999px;
+      overflow: hidden;
       display: flex;
-      gap: 0.5rem;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+      margin-bottom: 1.25rem;
+    }
+    .seg-teal {
+      background: var(--accent-teal);
+      height: 100%;
+    }
+    .seg-coral {
+      background: var(--accent-coral);
+      height: 100%;
+    }
+    .seg-slate {
+      background: var(--slate-segment);
+      height: 100%;
+    }
+    .revenue-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .legend-item {
+      display: flex;
       align-items: center;
+      gap: 0.75rem;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-teal { background: var(--accent-teal); }
+    .dot-coral { background: var(--accent-coral); }
+    .dot-slate { background: var(--slate-segment); }
+    .legend-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .legend-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .legend-amount {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
     }
 
-    .table-wrapper {
-      border: 1px solid var(--border);
+    /* Section 2: Statement Shelf & Ingestion (Image 1 CV Cards Reference) */
+    .section-title-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .section-title-strip h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+    }
+    .section-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .batch-shelf-grid {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 860px) {
+      .batch-shelf-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Ingestion Card */
+    .ingest-card {
+      background: var(--surface-card);
+      border: 2px dashed var(--border-strong);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      cursor: pointer;
+    }
+    .ingest-card:hover, .ingest-card.dragover {
+      border-color: var(--accent-coral);
+      background: var(--accent-coral-subtle);
+    }
+    .ingest-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .ingest-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-heading);
+      flex-shrink: 0;
+    }
+    .ingest-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.25rem;
+    }
+    .ingest-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .sample-pill-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+    .sample-pill-btn {
+      width: 100%;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      padding: 0.55rem 0.85rem;
       border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .sample-pill-btn:hover {
+      border-color: var(--accent-coral);
+      color: var(--accent-coral);
+      background: #fff;
+    }
+
+    /* Batch Cards Shelf */
+    .batch-cards-scroll {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    .statement-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .statement-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--border-strong);
+    }
+    .card-doc-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-heading);
+      margin-bottom: 0.75rem;
+    }
+    .card-doc-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.2rem;
+    }
+    .card-doc-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .card-numbers {
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .card-num-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+    }
+    .card-num-row:last-child { margin-bottom: 0; }
+    .card-num-label { color: var(--text-muted); }
+    .card-num-val {
+      font-weight: 700;
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+    }
+    .card-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: space-between;
+    }
+    .btn-card-action {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+    .btn-card-action:hover {
+      background: var(--surface-subtle);
+      color: var(--text-heading);
+    }
+    .btn-card-download {
+      background: var(--accent-coral-subtle);
+      color: var(--accent-coral);
+      border: 1px solid var(--accent-coral-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .btn-card-download:hover {
+      background: var(--accent-coral);
+      color: #fff;
+    }
+
+    /* Section 3: CPA Specification & Account Details (Image 2 Accordion Reference) */
+    .cpa-accordion-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
       overflow: hidden;
-      background: var(--card);
-      box-shadow: var(--shadow-sm);
-      padding: 0.5rem;
+    }
+    .cpa-accordion-header {
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface-card);
+      transition: background 0.15s ease;
+    }
+    .cpa-accordion-header:hover {
+      background: var(--surface-inset);
+    }
+    .cpa-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .cpa-icon-box {
+      width: 42px;
+      height: 42px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-heading);
+    }
+    .cpa-title-group h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.01em;
+    }
+    .cpa-title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .cpa-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .cpa-chevron {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+    .cpa-accordion-card.open .cpa-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* 4-Column Key-Value Specs Grid (Image 2 Account Details Reference) */
+    .cpa-spec-grid {
+      padding: 1.25rem 1.75rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--surface-inset);
+    }
+    @media (max-width: 900px) {
+      .cpa-spec-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .cpa-spec-grid { grid-template-columns: 1fr; }
+    }
+    .cpa-spec-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .cpa-spec-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+      margin-bottom: 0.25rem;
+    }
+    .cpa-spec-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+
+    /* Drawer Inputs inside Accordion */
+    .cpa-edit-drawer {
+      padding: 1.5rem 1.75rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--surface-card);
+      display: none;
+    }
+    .cpa-accordion-card.open .cpa-edit-drawer {
+      display: block;
+    }
+    .input-grid-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .field-box label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .field-box input, .field-box select {
+      width: 100%;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .field-box input:focus, .field-box select:focus {
+      border-color: var(--accent-coral);
+    }
+    .cpa-profile-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Section 4: Multi-Split Journal Ledger */
+    .ledger-container-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .ledger-top-bar {
+      padding: 1.25rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .ledger-title-group h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.01em;
+    }
+    .ledger-title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .ledger-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .table-scroll-frame {
+      overflow-x: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       text-align: left;
     }
     th {
-      background: var(--card-subtle);
+      background: var(--surface-inset);
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.02em;
-      padding: 0.65rem 0.85rem;
-      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
     }
     td {
-      padding: 0.65rem 0.85rem;
+      padding: 0.85rem 1rem;
       border-bottom: 1px solid var(--border-subtle);
       vertical-align: middle;
     }
@@ -425,357 +745,494 @@
       font-variant-numeric: tabular-nums lining-nums;
     }
     .text-right { text-align: right; }
-    .debit { color: var(--emerald); font-weight: 600; }
-    .credit { color: var(--text-muted); }
+    .val-debit { color: var(--accent-teal-dark); font-weight: 700; }
+    .val-credit { color: var(--text-body); font-weight: 500; }
 
-    /* Transaction Row Accordion */
-    tr.tx-parent {
+    tr.ledger-parent-row {
       cursor: pointer;
       transition: background 0.12s ease;
     }
-    tr.tx-parent:hover {
-      background: var(--card-subtle);
+    tr.ledger-parent-row:hover {
+      background: var(--surface-subtle);
     }
-    tr.tx-parent.expanded {
-      background: var(--card-subtle);
+    tr.ledger-parent-row.expanded {
+      background: var(--surface-subtle);
       font-weight: 600;
     }
-    .chevron {
+    .row-chevron {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       vertical-align: middle;
       transition: transform 0.15s ease;
-      margin-right: 0.35rem;
-      color: var(--text-subtle);
+      margin-right: 0.4rem;
+      color: var(--text-muted);
     }
-    tr.tx-parent.expanded .chevron {
+    tr.ledger-parent-row.expanded .row-chevron {
       transform: rotate(90deg);
     }
-    tr.tx-split {
-      background: var(--bg);
-      font-size: 0.8rem;
+    tr.ledger-split-row {
+      background: var(--surface-card);
+      font-size: 0.85rem;
     }
-    tr.tx-split td {
-      padding-top: 0.35rem;
-      padding-bottom: 0.35rem;
+    tr.ledger-split-row td {
+      padding-top: 0.45rem;
+      padding-bottom: 0.45rem;
       border-bottom: 1px solid var(--border-subtle);
     }
-    .split-indent {
+    .split-indent-cell {
       padding-left: 2rem;
       color: var(--text-muted);
     }
 
+    /* Documentation / SEO Guide Section */
+    .saas-guide-section {
+      margin-top: 3.5rem;
+    }
+    .guide-header-center {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .guide-header-center h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-heading);
+      margin-bottom: 0.35rem;
+    }
+    .guide-header-center p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    .guide-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .guide-step-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--text-heading);
+      color: var(--canvas-bg);
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .guide-step-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.35rem;
+    }
+    .guide-step-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .guide-step-card code {
+      background: var(--surface-subtle);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-heading);
+    }
+
+    /* FAQ Blocks */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .faq-item-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: var(--card-shadow);
+    }
+    .faq-item-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 0.35rem;
+    }
+    .faq-item-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
     /* Sticky Bottom Reconciliation Bar */
-    .sticky-bar {
+    .sticky-control-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: var(--card);
-      border-top: 1px solid var(--border);
-      padding: 0.85rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-      z-index: 90;
-      transition: background 0.18s ease;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-subtle);
+      padding: 0.9rem 1.5rem;
+      z-index: 100;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+      transition: background 0.2s ease;
     }
-    .sticky-inner {
-      max-width: 1040px;
+    [data-theme="dark"] .sticky-control-bar {
+      background: rgba(19, 27, 38, 0.95);
+    }
+    .sticky-bar-content {
+      max-width: 1140px;
       margin: 0 auto;
-      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
       flex-wrap: wrap;
     }
-    .sticky-stats {
+    .sticky-summary {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
-    .stat-chip {
-      font-size: 0.85rem;
+    .chip-stat {
+      font-size: 0.875rem;
       color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
-    .stat-chip strong {
-      color: var(--text);
+    .chip-stat strong {
+      color: var(--text-heading);
     }
-
-    /* Documentation Section */
-    .docs-section {
-      margin-top: 4rem;
-    }
-    .docs-section h2 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-    .doc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }
-    .doc-step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-    }
-    .doc-step h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
+    .sticky-actions {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-    .step-num {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: var(--primary-fg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-    }
-    .doc-step p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-    .doc-step code {
-      background: var(--card-subtle);
-      padding: 0.15rem 0.35rem;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
+      gap: 0.75rem;
     }
 
-    /* FAQ */
-    .faq-block {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .faq-block h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-    }
-    .faq-block p {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Modal */
-    .modal-overlay {
+    /* Early Access Modal */
+    .modal-backdrop {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(2px);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
-      z-index: 1000;
+      padding: 1.5rem;
+      z-index: 200;
     }
-    .modal-overlay.active {
+    .modal-backdrop.active {
       display: flex;
     }
     .modal-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      max-width: 460px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      max-width: 480px;
       width: 100%;
-      padding: 2rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      padding: 2.25rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       position: relative;
     }
-    .modal-close {
+    .modal-close-btn {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 1.25rem;
+      right: 1.25rem;
       background: none;
       border: none;
       color: var(--text-muted);
       font-size: 1.25rem;
       cursor: pointer;
     }
+    .modal-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--accent-coral-subtle);
+      color: var(--accent-coral);
+      border: 1px solid var(--accent-coral-border);
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
     .modal-card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
     }
     .modal-card p {
       font-size: 0.9rem;
       color: var(--text-muted);
       margin-bottom: 1.25rem;
+      line-height: 1.45;
     }
-    .modal-input {
+    .modal-input-field {
       width: 100%;
-      background: var(--card-subtle);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.6rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      margin-bottom: 0.75rem;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-heading);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 0.85rem;
+      outline: none;
+    }
+    .modal-input-field:focus {
+      border-color: var(--accent-coral);
     }
 
     footer {
-      margin-top: 3rem;
+      margin-top: 4rem;
       text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-subtle);
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Top Bar -->
-  <nav class="top-bar" aria-label="Main Navigation">
-    <div class="brand">
-      <div class="brand-mark">&Sigma;</div>
-      <span class="brand-title">Square &rarr; GnuCash</span>
+  <!-- Top Navigation Bar (Image 1 Style) -->
+  <nav class="top-nav" aria-label="Main Navigation">
+    <div class="brand-group">
+      <div class="brand-symbol">&Sigma;</div>
+      <div class="brand-meta">
+        <h1>LedgerFlow</h1>
+        <span>SQUARE &rarr; GNUCASH RECONCILIATION</span>
+      </div>
     </div>
-    <div class="top-actions">
-      <button class="btn-link" id="btnToggleSettings">
+    <div class="nav-actions">
+      <button class="btn-ghost" id="btnToggleSettings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-        Account Mapping
+        Chart Map
       </button>
-      <button class="btn-link" id="btnOpenProNav">
-        Save Rules ($19)
+      <button class="btn-coral-pill" id="btnOpenProNav">
+        <span>✨ Save Rules ($19)</span>
       </button>
-      <button class="btn-link" id="btnThemeToggle" aria-label="Toggle theme">
-        <svg id="themeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <button class="icon-btn" id="btnThemeToggle" aria-label="Toggle visual theme">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
     </div>
   </nav>
 
-  <!-- Hero Header -->
-  <header class="hero">
-    <h1>Reconcile Square Sales into GnuCash</h1>
-    <p>Transform raw Square transaction and transfer CSV exports into balanced, multi-split journal entries. Isolates processing fees, sales taxes, tips, and bank deposits.</p>
-    <div class="privacy-tag">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      100% In-Browser &bull; Zero Server Uploads &bull; Private CPA Precision
+  <!-- Section 1: Dashboard Balance & Revenue Flow Bar (Image 2 Reference) -->
+  <section class="dashboard-hero-card" aria-label="Double-Entry Balance Overview">
+    <div class="hero-top-metrics">
+      <div class="metric-duo">
+        <div class="metric-block">
+          <span class="metric-label">Total Debits (Deposits + Fees)</span>
+          <span class="metric-value" id="heroTotalDebits">$275.60</span>
+        </div>
+        <div class="metric-block">
+          <span class="metric-label">Total Credits (Sales + Tax + Tips)</span>
+          <span class="metric-value" id="heroTotalCredits">$275.60</span>
+        </div>
+      </div>
+      <div class="status-badge-verified" id="badgeVerified">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="invariantStatusText">100% Reconciled (&Delta; $0.00)</span>
+      </div>
     </div>
-  </header>
 
-  <!-- Account Mapping Drawer (Progressive Disclosure) -->
-  <div class="settings-drawer" id="settingsDrawer">
-    <div class="drawer-header">
-      <h2>Chart of Accounts Mapping</h2>
-      <button class="btn-link" id="btnCloseDrawer">Close</button>
+    <!-- Segmented Revenue Utilization Slider -->
+    <div class="utilization-section">
+      <div class="utilization-header">
+        <span class="utilization-title">Settlement Revenue Composition</span>
+        <span class="net-percent-pill" id="netPercentBadge">91.2% Net Deposited</span>
+      </div>
+      <div class="segmented-track" role="progressbar" aria-label="Revenue distribution">
+        <div class="seg-teal" id="barSegTeal" style="width: 91.2%;" title="Net Bank Deposit"></div>
+        <div class="seg-coral" id="barSegCoral" style="width: 2.7%;" title="Square Fees"></div>
+        <div class="seg-slate" id="barSegSlate" style="width: 6.1%;" title="Sales Tax & Tips"></div>
+      </div>
+      <div class="revenue-legend">
+        <div class="legend-item">
+          <div class="legend-dot dot-teal"></div>
+          <div class="legend-info">
+            <span class="legend-title">Net Bank Deposits</span>
+            <span class="legend-amount" id="legendNetCash">$251.40</span>
+          </div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot dot-coral"></div>
+          <div class="legend-info">
+            <span class="legend-title">Square Processing Fees</span>
+            <span class="legend-amount" id="legendFees">$7.40</span>
+          </div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot dot-slate"></div>
+          <div class="legend-info">
+            <span class="legend-title">Sales Tax & Tips Liabilities</span>
+            <span class="legend-amount" id="legendTaxTips">$16.80</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="grid-fields">
-      <div class="field-group">
-        <label for="modeSelect">Reconciliation Mode</label>
-        <select id="modeSelect">
-          <option value="daily" selected>Daily Settlement Batch (Matches Bank Deposits)</option>
-          <option value="detailed">Per-Transaction Granular (Every Sale)</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label for="accountBank">Bank / Clearing Asset (Debit)</label>
-        <input type="text" id="accountBank" value="Assets:Current Assets:Square Clearing">
-      </div>
-      <div class="field-group">
-        <label for="accountFee">Processing Fee Expense (Debit)</label>
-        <input type="text" id="accountFee" value="Expenses:Bank Charges:Square Processing Fees">
-      </div>
-      <div class="field-group">
-        <label for="accountSales">Gross Sales Income (Credit)</label>
-        <input type="text" id="accountSales" value="Income:Sales">
-      </div>
-      <div class="field-group">
-        <label for="accountTax">Sales Tax Liability (Credit)</label>
-        <input type="text" id="accountTax" value="Liabilities:Sales Tax Payable">
-      </div>
-      <div class="field-group">
-        <label for="accountTips">Tips Liability (Credit)</label>
-        <input type="text" id="accountTips" value="Liabilities:Tips Payable">
-      </div>
-    </div>
-    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); flex-wrap: wrap;">
-      <button class="btn-outline" id="btnExportProfile" style="font-size: 0.75rem;">Export Profile (.json)</button>
-      <button class="btn-outline" id="btnImportProfile" style="font-size: 0.75rem;">Import Profile</button>
-      <input type="file" id="profileFileInput" accept=".json" style="display: none;">
+  </section>
+
+  <!-- Section 2: Statement Batch Shelf (Image 1 Style) -->
+  <div class="section-title-strip">
+    <div>
+      <h2>Settlement Batches & Statements</h2>
+      <span class="section-subtitle">Ingest Square exports to generate isolated deposit batches and multi-split statements</span>
     </div>
   </div>
 
-  <!-- Compact Upload Strip -->
-  <div class="upload-strip" id="dropzone" role="button" tabindex="0" aria-label="Upload Square CSV file">
-    <div class="upload-left">
-      <div class="upload-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+  <div class="batch-shelf-grid">
+    <!-- Ingestion Dropzone Tile -->
+    <div class="ingest-card" id="dropzone" role="button" tabindex="0" aria-label="Upload Square CSV file">
+      <div class="ingest-header">
+        <div class="ingest-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div>
+          <h3>Drop Square CSV</h3>
+          <p>Supports <strong>Transactions.csv</strong> or <strong>Transfers.csv</strong> directly from Square</p>
+        </div>
       </div>
-      <div class="upload-text">
-        <h2>Drop your Square CSV export here</h2>
-        <p>Supports <strong>Transactions.csv</strong> or <strong>Balance Transfers.csv</strong> directly from Square</p>
+
+      <div class="sample-pill-group" onclick="event.stopPropagation()">
+        <button class="sample-pill-btn" id="btnSampleTx">
+          <span>Retail Sales Demo</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="sample-pill-btn" id="btnSampleTransfer">
+          <span>Deposit Transfers Demo</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="btn-ghost" id="btnBrowseFile" style="width: 100%; justify-content: center; margin-top: 0.25rem;">
+          Browse File
+        </button>
+        <input type="file" id="fileInput" accept=".csv" style="display: none;">
       </div>
     </div>
-    <div class="upload-buttons" onclick="event.stopPropagation()">
-      <button class="btn-outline" id="btnSampleTx">Sample Transactions</button>
-      <button class="btn-outline" id="btnSampleTransfer">Sample Transfers</button>
-      <button class="btn-solid" id="btnBrowseFile">Browse File</button>
-      <input type="file" id="fileInput" accept=".csv" style="display: none;">
+
+    <!-- Active Statement Cards Shelf -->
+    <div class="batch-cards-scroll" id="batchCardsContainer">
+      <!-- Injected dynamically by JavaScript -->
     </div>
   </div>
 
-  <!-- T-Account Balance Card -->
-  <div class="t-account-card">
-    <div class="t-side">
-      <span class="t-side-label">Total Debits (Deposits + Fees)</span>
-      <span class="t-side-amount" id="totalDebitsDisplay">$275.60</span>
-      <span class="t-side-subtext">Cash Cleared + Merchant Processing Costs</span>
-    </div>
-    <div class="t-side">
-      <span class="t-side-label">Total Credits (Sales + Tax + Tips)</span>
-      <span class="t-side-amount" id="totalCreditsDisplay">$275.60</span>
-      <span class="t-side-subtext">Merchandise Revenue + Liabilities Collected</span>
-    </div>
-    <div class="balance-badge">
-      <span>Double-Entry Balance</span>
-      <strong id="imbalanceDisplay">&Delta; $0.00</strong>
-    </div>
-  </div>
-
-  <!-- Ledger Table Section -->
-  <section class="ledger-section" aria-label="GnuCash Journal Preview">
-    <div class="ledger-header">
-      <h2>GnuCash Multi-Split Journal Preview</h2>
-      <div class="ledger-controls">
-        <button class="btn-link" id="btnToggleAllRows">Expand All Splits</button>
+  <!-- Section 3: CPA Account Specification & Configuration Accordion (Image 2 Account Details Reference) -->
+  <div class="cpa-accordion-card" id="cpaAccordion">
+    <div class="cpa-accordion-header" id="cpaAccordionToggle">
+      <div class="cpa-header-left">
+        <div class="cpa-icon-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"/></svg>
+        </div>
+        <div class="cpa-title-group">
+          <h3>GnuCash Chart of Accounts Specification</h3>
+          <p>Standardized double-entry routing paths for Square merchant settlements</p>
+        </div>
+      </div>
+      <div class="cpa-header-right">
+        <span class="status-badge-verified" style="padding: 0.35rem 0.75rem;">Mapped</span>
+        <svg class="cpa-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
     </div>
 
-    <div class="table-wrapper">
+    <!-- 4-Column Key-Value Specs Grid -->
+    <div class="cpa-spec-grid">
+      <div class="cpa-spec-item">
+        <span class="cpa-spec-label">Reconciliation Mode</span>
+        <span class="cpa-spec-value" id="specMode">Daily Settlement Batch</span>
+      </div>
+      <div class="cpa-spec-item">
+        <span class="cpa-spec-label">Clearing Asset (Debit)</span>
+        <span class="cpa-spec-value" id="specBank">Assets:...:Square Clearing</span>
+      </div>
+      <div class="cpa-spec-item">
+        <span class="cpa-spec-label">Processing Fee Expense</span>
+        <span class="cpa-spec-value" id="specFee">Expenses:...:Square Fees</span>
+      </div>
+      <div class="cpa-spec-item">
+        <span class="cpa-spec-label">Sales Income (Credit)</span>
+        <span class="cpa-spec-value" id="specSales">Income:Sales</span>
+      </div>
+    </div>
+
+    <!-- Accordion Edit Drawer -->
+    <div class="cpa-edit-drawer">
+      <div class="input-grid-fields">
+        <div class="field-box">
+          <label for="modeSelect">Batch Aggregation Mode</label>
+          <select id="modeSelect">
+            <option value="daily" selected>Daily Settlement Batch (Matches Bank Deposits)</option>
+            <option value="detailed">Per-Transaction Granular (Every Sale)</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <label for="accountBank">Bank / Clearing Asset (Debit)</label>
+          <input type="text" id="accountBank" value="Assets:Current Assets:Square Clearing">
+        </div>
+        <div class="field-box">
+          <label for="accountFee">Processing Fee Expense (Debit)</label>
+          <input type="text" id="accountFee" value="Expenses:Bank Charges:Square Processing Fees">
+        </div>
+        <div class="field-box">
+          <label for="accountSales">Gross Sales Income (Credit)</label>
+          <input type="text" id="accountSales" value="Income:Sales">
+        </div>
+        <div class="field-box">
+          <label for="accountTax">Sales Tax Liability (Credit)</label>
+          <input type="text" id="accountTax" value="Liabilities:Sales Tax Payable">
+        </div>
+        <div class="field-box">
+          <label for="accountTips">Staff Tips Liability (Credit)</label>
+          <input type="text" id="accountTips" value="Liabilities:Tips Payable">
+        </div>
+      </div>
+      <div class="cpa-profile-actions">
+        <button class="btn-ghost" id="btnExportProfile">Export Profile (.json)</button>
+        <button class="btn-ghost" id="btnImportProfile">Import Profile</button>
+        <input type="file" id="profileFileInput" accept=".json" style="display: none;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Multi-Split Journal Ledger Table -->
+  <section class="ledger-container-card" id="ledgerSection" aria-label="GnuCash Multi-Split Journal">
+    <div class="ledger-top-bar">
+      <div class="ledger-title-group">
+        <h2>Multi-Split Journal Ledger</h2>
+        <p>Balanced double-entry journal entries formatted for GnuCash multi-split CSV import</p>
+      </div>
+      <div class="ledger-actions">
+        <button class="btn-ghost" id="btnToggleAllRows">Expand All Splits</button>
+      </div>
+    </div>
+
+    <div class="table-scroll-frame">
       <table>
         <thead>
           <tr>
-            <th style="width: 140px;">Date</th>
+            <th style="width: 130px;">Date</th>
             <th>Description & Account Hierarchy</th>
-            <th class="text-right" style="width: 140px;">Deposit (Debit)</th>
-            <th class="text-right" style="width: 140px;">Withdrawal (Credit)</th>
+            <th class="text-right" style="width: 150px;">Deposit (Debit)</th>
+            <th class="text-right" style="width: 150px;">Withdrawal (Credit)</th>
           </tr>
         </thead>
         <tbody id="ledgerBody"></tbody>
@@ -783,84 +1240,95 @@
     </div>
   </section>
 
-  <!-- Technical Documentation Guide (SEO) -->
-  <section class="docs-section">
-    <h2>Step-by-Step GnuCash Import Guide</h2>
-    <div class="doc-grid">
-      <div class="doc-step">
-        <h3><span class="step-num">1</span> Export Square CSV</h3>
+  <!-- Step-by-Step Educational SaaS Guide (SEO) -->
+  <section class="saas-guide-section">
+    <div class="guide-header-center">
+      <h2>How Square Reconciles in GnuCash</h2>
+      <p>A professional CPA-grade workflow to eliminate mystery discrepancies between Square deposits and your checking account.</p>
+    </div>
+
+    <div class="guide-steps-grid">
+      <div class="guide-step-card">
+        <div class="step-badge">1</div>
+        <h3>Export Square CSV</h3>
         <p>In Square Dashboard, go to <code>Transactions</code> &rarr; <code>Export</code> &rarr; <code>Transactions CSV</code>, or navigate to <code>Balance</code> &rarr; <code>View all transfers</code> to download settlement files.</p>
       </div>
-      <div class="doc-step">
-        <h3><span class="step-num">2</span> Convert & Reconcile</h3>
-        <p>Drop the raw file into this utility. Verify the T-account equation balances to &Delta; $0.00, then click <strong>Download GnuCash CSV</strong> in the bottom bar.</p>
+      <div class="guide-step-card">
+        <div class="step-badge">2</div>
+        <h3>Parse & Inspect Batches</h3>
+        <p>Drop the CSV into LedgerFlow. Review the statement batch shelf, verify the revenue distribution bar, and inspect the balanced debits and credits.</p>
       </div>
-      <div class="doc-step">
-        <h3><span class="step-num">3</span> Import into GnuCash</h3>
-        <p>In GnuCash, select <code>File &rarr; Import &rarr; Import Transactions from CSV</code>. Check <strong>"Multi-split"</strong>, assign the column mappings, and apply.</p>
+      <div class="guide-step-card">
+        <div class="step-badge">3</div>
+        <h3>Import Multi-Split CSV</h3>
+        <p>In GnuCash, choose <code>File &rarr; Import &rarr; Import Transactions from CSV</code>. Check <strong>"Multi-split"</strong>, verify column assignments, and complete the import.</p>
       </div>
     </div>
 
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-block">
-      <h3>Why isolate a Square Clearing account instead of posting directly to Checking?</h3>
-      <p>Square bundles several days of transactions into lump-sum bank deposits after subtracting processing fees. Posting gross transactions straight into checking makes bank statement reconciliation nearly impossible. Routing to <code>Assets:Square Clearing</code> isolates unsettled revenue until the lump transfer posts.</p>
-    </div>
-    <div class="faq-block">
-      <h3>How are Square fees handled in double-entry bookkeeping?</h3>
-      <p>Square fees are an immediate cost of doing business. By booking gross sales to <code>Income:Sales</code> and debiting fees to <code>Expenses:Square Processing Fees</code>, your true gross revenue and total merchant costs remain 100% accurate on your profit and loss statement.</p>
-    </div>
-    <div class="faq-block">
-      <h3>Is my accounting data secure?</h3>
-      <p>Yes. This application runs entirely client-side using HTML5 and JavaScript. No financial records, sales amounts, or customer data ever touch an external server.</p>
+    <div class="faq-grid">
+      <div class="faq-item-card">
+        <h4>Why isolate a Square Clearing asset?</h4>
+        <p>Square bundles several days of transactions into lump-sum bank deposits after subtracting processing fees. Posting gross transactions straight into checking makes bank statement reconciliation nearly impossible. Routing to <code>Assets:Square Clearing</code> isolates unsettled revenue until the lump transfer posts.</p>
+      </div>
+      <div class="faq-item-card">
+        <h4>How are merchant processing fees isolated?</h4>
+        <p>Square fees are an immediate cost of doing business. By booking gross sales to <code>Income:Sales</code> and debiting fees to <code>Expenses:Square Processing Fees</code>, your true gross revenue and total merchant costs remain 100% accurate on your profit and loss statement.</p>
+      </div>
+      <div class="faq-item-card">
+        <h4>Is my transaction data private?</h4>
+        <p>100% yes. LedgerFlow runs entirely inside your browser using HTML5 and JavaScript. No customer data, sales figures, or financial records ever leave your machine or hit an external server.</p>
+      </div>
     </div>
   </section>
 
   <!-- Sticky Bottom Reconciliation Bar -->
-  <div class="sticky-bar">
-    <div class="sticky-inner">
-      <div class="sticky-stats">
-        <div class="stat-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span id="statTxCount"><strong>2</strong> transactions</span>
+  <aside class="sticky-control-bar" aria-label="Reconciliation Actions">
+    <div class="sticky-bar-content">
+      <div class="sticky-summary">
+        <div class="chip-stat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span id="statBatchCount"><strong>2</strong> batches</span>
         </div>
-        <div class="stat-chip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          <span style="color: var(--emerald); font-weight: 600;">Balanced (&Delta; $0.00)</span>
+        <div class="chip-stat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="color: var(--accent-teal); font-weight: 700;">Double-Entry Verified</span>
         </div>
       </div>
-      <div class="top-actions">
-        <button class="btn-outline" id="btnOpenPro">Save Rules & Pro ($19)</button>
-        <button class="btn-solid" id="btnDownload">Download GnuCash CSV</button>
+      <div class="sticky-actions">
+        <button class="btn-ghost" id="btnOpenPro">Save Rules in Pro ($19)</button>
+        <button class="btn-coral-pill" id="btnDownload">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Consolidated GnuCash CSV
+        </button>
       </div>
     </div>
-  </div>
+  </aside>
 
-  <!-- Early Access / Pro Intent Modal -->
-  <div class="modal-overlay" id="proModal">
+  <!-- Early Access / Save Rules Pro Intent Modal -->
+  <div class="modal-backdrop" id="proModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-card">
-      <button class="modal-close" id="btnCloseModal" aria-label="Close modal">&times;</button>
-      <span class="privacy-tag" style="margin-bottom: 0.75rem;">EARLY ACCESS &bull; $19 LIFETIME</span>
-      <h3>Save Mapping Rules in Pro</h3>
-      <p>Never re-configure accounts. Pro unlocks saved custom chart of accounts mapping, recurring automated sync, and multi-location fee tagging.</p>
+      <button class="modal-close-btn" id="btnCloseModal" aria-label="Close dialog">&times;</button>
+      <span class="modal-badge">EARLY ACCESS &bull; $19 LIFETIME LICENSE</span>
+      <h3 id="modalTitle">Save Mapping Rules in Pro</h3>
+      <p>Never reconfigure accounts manually. Pro unlocks saved custom chart of accounts profiles, multi-location fee tagging, and recurring automated sync.</p>
       <form id="proForm">
-        <label for="proEmail" style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem;">Email Address</label>
-        <input type="email" id="proEmail" class="modal-input" required placeholder="cpa@business.com">
-        <button type="submit" class="btn-solid" style="width: 100%; justify-content: center;">
-          Lock in Early-Bird Access ($9.50)
+        <label for="proEmail" style="display: block; font-size: 0.875rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.45rem;">Work Email Address</label>
+        <input type="email" id="proEmail" class="modal-input-field" required placeholder="cpa@business.com">
+        <button type="submit" class="btn-coral-pill" style="width: 100%; justify-content: center; padding: 0.65rem 1rem; border-radius: 8px;">
+          Lock In Early-Bird Access ($19)
         </button>
-        <p style="font-size: 0.75rem; margin-top: 0.75rem; color: var(--text-subtle); text-align: center;">
-          Privacy blocker active? Email directly: <a href="mailto:experiments@4ourenterprises.me?subject=Square%20GnuCash%20Pro" style="color: var(--accent); text-decoration: underline;">experiments@4ourenterprises.me</a>
+        <p style="font-size: 0.85rem; margin-top: 0.75rem; color: var(--text-muted); text-align: center;">
+          Strict privacy guarantee. Questions? Email <a href="mailto:experiments@4ourenterprises.me?subject=Square%20GnuCash%20Pro" style="color: var(--accent-coral); text-decoration: underline;">experiments@4ourenterprises.me</a>
         </p>
       </form>
-      <div id="proSuccess" style="display: none; margin-top: 1rem; color: var(--emerald); font-size: 0.9rem; text-align: center; font-weight: 600;">
-        &check; You're on the early-access list! We'll reach out as soon as rules save is live.
+      <div id="proSuccess" style="display: none; margin-top: 1rem; color: var(--accent-teal); font-size: 0.875rem; text-align: center; font-weight: 700;">
+        &check; You're on the early-access list! We'll notify you as soon as rule saving is live.
       </div>
     </div>
   </div>
 
   <footer>
-    <p>Square&reg; is a registered trademark of Block, Inc. GnuCash is open-source accounting software. This project is independent.</p>
+    <p>Square&reg; is a registered trademark of Block, Inc. GnuCash is open-source accounting software. This tool is independent.</p>
     <p style="margin-top: 0.25rem;">Jackson Street Commercial Validation Lab.</p>
   </footer>
 </div>
@@ -877,7 +1345,7 @@ function logTelemetry(eventType, details = {}) {
 }
 logTelemetry("pageview", { referrer: document.referrer || "direct" });
 
-// --- Sample Data ---
+// --- Sample Datasets ---
 const SAMPLE_TRANSACTIONS = `Date,Time,Gross Sales,Discounts,Net Sales,Tax,Tip,Fees,Net Total,Transaction Status,Transaction ID,Description
 2026-10-01,12:30:00,$100.00,$10.00,$90.00,$7.20,$15.00,-$3.15,$109.05,Complete,sq_tx_101,Coffee & Pastries
 2026-10-01,13:15:00,$25.00,$0.00,$25.00,$2.00,$0.00,-$0.85,$26.15,Complete,sq_tx_102,Beans Bag
@@ -968,10 +1436,14 @@ function convertData(rawText) {
     Object.keys(groups).forEach(depId => {
       const g = groups[depId];
       entries.push({
+        batchId: depId,
         date: g.date,
         description: `Square Transfer ${depId} (${g.count} payments)`,
+        count: g.count,
+        grossSales: g.collected,
         netDeposited: g.deposited,
         fees: g.fees,
+        taxTips: 0,
         splits: [
           { account: bankAcc, memo: "Net deposit to bank", amount: g.deposited },
           { account: feeAcc, memo: "Square processing fee", amount: g.fees },
@@ -997,13 +1469,17 @@ function convertData(rawText) {
         groups[dt].count++;
       });
 
-      Object.keys(groups).sort().forEach(dt => {
+      Object.keys(groups).sort().forEach((dt, idx) => {
         const g = groups[dt];
         entries.push({
+          batchId: `BATCH-${dt}`,
           date: dt,
           description: `Square Settlement Batch (${g.count} transactions)`,
+          count: g.count,
+          grossSales: g.gross - g.discounts,
           netDeposited: g.net,
           fees: g.fees,
+          taxTips: g.tax + g.tip,
           splits: [
             { account: bankAcc, memo: "Net settled funds", amount: g.net },
             { account: feeAcc, memo: "Square processing fee", amount: g.fees },
@@ -1014,10 +1490,10 @@ function convertData(rawText) {
         });
       });
     } else {
-      rows.forEach(r => {
+      rows.forEach((r, idx) => {
         if ((r["Transaction Status"] || "").toLowerCase() === "failed") return;
         const dt = (r["Date"] || "").trim();
-        const txId = r["Transaction ID"] || "";
+        const txId = r["Transaction ID"] || `tx_${idx}`;
         const desc = r["Description"] || `Square Sale ${txId}`;
         const gross = cleanCurrency(r["Gross Sales"]);
         const disc = Math.abs(cleanCurrency(r["Discounts"]));
@@ -1027,10 +1503,14 @@ function convertData(rawText) {
         const net = cleanCurrency(r["Net Total"]) || (gross - disc + tax + tip - fees);
 
         entries.push({
+          batchId: txId,
           date: dt,
           description: desc,
+          count: 1,
+          grossSales: gross - disc,
           netDeposited: net,
           fees: fees,
+          taxTips: tax + tip,
           splits: [
             { account: bankAcc, memo: "Square Clearing Deposit", amount: net },
             { account: feeAcc, memo: "Square processing fee", amount: fees },
@@ -1045,11 +1525,88 @@ function convertData(rawText) {
   return entries;
 }
 
+function updateSpecificationGrid() {
+  const mode = document.getElementById("modeSelect").value;
+  document.getElementById("specMode").textContent = mode === "daily" ? "Daily Settlement Batch" : "Per-Transaction Granular";
+  document.getElementById("specBank").textContent = document.getElementById("accountBank").value;
+  document.getElementById("specFee").textContent = document.getElementById("accountFee").value;
+  document.getElementById("specSales").textContent = document.getElementById("accountSales").value;
+}
+
+function renderBatchShelf(entries) {
+  const container = document.getElementById("batchCardsContainer");
+  container.innerHTML = "";
+
+  entries.forEach((entry, idx) => {
+    const card = document.createElement("div");
+    card.className = "statement-card";
+    card.id = `batch-card-${idx}`;
+    card.innerHTML = `
+      <div>
+        <div class="card-doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="card-doc-title">${entry.description.split("(")[0].trim()}</div>
+        <div class="card-doc-subtitle">${entry.date} &bull; ${entry.count} ${entry.count === 1 ? 'sale' : 'sales'}</div>
+        <div class="card-numbers">
+          <div class="card-num-row">
+            <span class="card-num-label">Net Deposited:</span>
+            <span class="card-num-val" style="color: var(--accent-teal);">$${entry.netDeposited.toFixed(2)}</span>
+          </div>
+          <div class="card-num-row">
+            <span class="card-num-label">Square Fees:</span>
+            <span class="card-num-val" style="color: var(--accent-coral);">$${entry.fees.toFixed(2)}</span>
+          </div>
+          <div class="card-num-row">
+            <span class="card-num-label">Gross Volume:</span>
+            <span class="card-num-val">$${entry.grossSales.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-action-bar">
+        <button class="btn-card-action" onclick="scrollToLedgerRow(${idx})">Inspect Splits</button>
+        <button class="btn-card-download" onclick="exportSingleBatchCSV(${idx})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+window.scrollToLedgerRow = function(index) {
+  const row = document.getElementById(`tx-row-${index}`);
+  if (row) {
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    row.classList.add('expanded');
+    document.querySelectorAll(`.split-of-${index}`).forEach(r => r.style.display = 'table-row');
+  }
+};
+
+window.exportSingleBatchCSV = function(index) {
+  const entry = currentEntries[index];
+  if (!entry) return;
+  const csvContent = generateGnuCashCSV([entry]);
+  logTelemetry("batch_csv_download", { batchId: entry.batchId, date: entry.date });
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `gnucash_batch_${entry.date}_${index + 1}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 function renderLedger(entries) {
   const tbody = document.getElementById("ledgerBody");
   tbody.innerHTML = "";
   let totalDebits = 0;
   let totalCredits = 0;
+  let totalNetDeposited = 0;
+  let totalFees = 0;
+  let totalTaxTips = 0;
 
   entries.forEach((entry, eIdx) => {
     let entryDebits = 0;
@@ -1059,37 +1616,42 @@ function renderLedger(entries) {
       else { entryCredits += Math.abs(s.amount); totalCredits += Math.abs(s.amount); }
     });
 
+    totalNetDeposited += entry.netDeposited;
+    totalFees += entry.fees;
+    totalTaxTips += entry.taxTips;
+
     // Parent summary row
     const trParent = document.createElement("tr");
-    trParent.className = `tx-parent ${allExpanded ? "expanded" : ""}`;
+    trParent.className = `ledger-parent-row ${allExpanded ? "expanded" : ""}`;
+    trParent.id = `tx-row-${eIdx}`;
     trParent.dataset.index = eIdx;
     trParent.innerHTML = `
       <td class="mono">
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg class="row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         ${entry.date}
       </td>
-      <td><strong>${entry.description}</strong> <span style="font-size: 0.75rem; color: var(--text-subtle);">(${entry.splits.length} splits)</span></td>
-      <td class="text-right mono debit">$${entryDebits.toFixed(2)}</td>
-      <td class="text-right mono credit">$${entryCredits.toFixed(2)}</td>
+      <td><strong>${entry.description}</strong> <span style="font-size: 0.85rem; color: var(--text-muted); margin-left: 0.35rem;">(${entry.splits.length} splits)</span></td>
+      <td class="text-right mono val-debit">$${entryDebits.toFixed(2)}</td>
+      <td class="text-right mono val-credit">$${entryCredits.toFixed(2)}</td>
     `;
     tbody.appendChild(trParent);
 
     // Child split rows
     entry.splits.forEach(s => {
       const trSplit = document.createElement("tr");
-      trSplit.className = `tx-split split-of-${eIdx}`;
+      trSplit.className = `ledger-split-row split-of-${eIdx}`;
       trSplit.style.display = allExpanded ? "table-row" : "none";
       const depStr = s.amount > 0 ? `$${s.amount.toFixed(2)}` : "";
       const withStr = s.amount < 0 ? `$${Math.abs(s.amount).toFixed(2)}` : "";
 
       trSplit.innerHTML = `
-        <td class="mono" style="color: var(--text-subtle);"></td>
-        <td class="split-indent">
+        <td class="mono" style="color: var(--text-muted);"></td>
+        <td class="split-indent-cell">
           <span class="mono">${s.account}</span>
-          <span style="font-size: 0.75rem; color: var(--text-subtle); margin-left: 0.5rem;">&bull; ${s.memo}</span>
+          <span style="font-size: 0.85rem; color: var(--text-muted); margin-left: 0.45rem;">&bull; ${s.memo}</span>
         </td>
-        <td class="text-right mono debit">${depStr}</td>
-        <td class="text-right mono credit">${withStr}</td>
+        <td class="text-right mono val-debit">${depStr}</td>
+        <td class="text-right mono val-credit">${withStr}</td>
       `;
       tbody.appendChild(trSplit);
     });
@@ -1102,12 +1664,46 @@ function renderLedger(entries) {
     };
   });
 
-  // Update T-Account and stats
-  document.getElementById("totalDebitsDisplay").textContent = `$${totalDebits.toFixed(2)}`;
-  document.getElementById("totalCreditsDisplay").textContent = `$${totalCredits.toFixed(2)}`;
+  // Update Hero Totals
+  document.getElementById("heroTotalDebits").textContent = `$${totalDebits.toFixed(2)}`;
+  document.getElementById("heroTotalCredits").textContent = `$${totalCredits.toFixed(2)}`;
+  
   const delta = Math.abs(totalDebits - totalCredits);
-  document.getElementById("imbalanceDisplay").textContent = delta < 0.01 ? "Δ $0.00" : `Imbalance: $${delta.toFixed(2)}`;
-  document.getElementById("statTxCount").innerHTML = `<strong>${entries.length}</strong> transactions`;
+  const isBalanced = delta < 0.01;
+  const statusEl = document.getElementById("invariantStatusText");
+  const badgeEl = document.getElementById("badgeVerified");
+  if (isBalanced) {
+    statusEl.textContent = "100% Reconciled (Δ $0.00)";
+    badgeEl.style.background = "var(--accent-teal-subtle)";
+    badgeEl.style.color = "var(--accent-teal)";
+    badgeEl.style.borderColor = "var(--accent-teal-border)";
+  } else {
+    statusEl.textContent = `Imbalance: Δ $${delta.toFixed(2)}`;
+    badgeEl.style.background = "var(--accent-coral-subtle)";
+    badgeEl.style.color = "var(--accent-coral)";
+    badgeEl.style.borderColor = "var(--accent-coral-border)";
+  }
+
+  // Update Revenue Flow Segmented Slider
+  const grossVolume = totalNetDeposited + totalFees + totalTaxTips;
+  if (grossVolume > 0) {
+    const pNet = (totalNetDeposited / grossVolume) * 100;
+    const pFees = (totalFees / grossVolume) * 100;
+    const pTax = (totalTaxTips / grossVolume) * 100;
+    document.getElementById("barSegTeal").style.width = `${pNet.toFixed(1)}%`;
+    document.getElementById("barSegCoral").style.width = `${pFees.toFixed(1)}%`;
+    document.getElementById("barSegSlate").style.width = `${pTax.toFixed(1)}%`;
+    document.getElementById("netPercentBadge").textContent = `${pNet.toFixed(1)}% Net Deposited`;
+  }
+  document.getElementById("legendNetCash").textContent = `$${totalNetDeposited.toFixed(2)}`;
+  document.getElementById("legendFees").textContent = `$${totalFees.toFixed(2)}`;
+  document.getElementById("legendTaxTips").textContent = `$${totalTaxTips.toFixed(2)}`;
+
+  // Update Sticky Bar
+  document.getElementById("statBatchCount").innerHTML = `<strong>${entries.length}</strong> ${entries.length === 1 ? 'batch' : 'batches'}`;
+
+  // Update Batch Cards Shelf
+  renderBatchShelf(entries);
 }
 
 function generateGnuCashCSV(entries) {
@@ -1130,6 +1726,7 @@ function generateGnuCashCSV(entries) {
 // UI Handlers
 function runConversion() {
   if (!currentCsvRaw) return;
+  updateSpecificationGrid();
   currentEntries = convertData(currentCsvRaw);
   renderLedger(currentEntries);
 }
@@ -1138,22 +1735,27 @@ function runConversion() {
 document.getElementById("btnToggleAllRows").onclick = () => {
   allExpanded = !allExpanded;
   document.getElementById("btnToggleAllRows").textContent = allExpanded ? "Collapse All Splits" : "Expand All Splits";
-  document.querySelectorAll(".tx-parent").forEach(p => p.classList.toggle("expanded", allExpanded));
-  document.querySelectorAll(".tx-split").forEach(s => s.style.display = allExpanded ? "table-row" : "none");
+  document.querySelectorAll(".ledger-parent-row").forEach(p => p.classList.toggle("expanded", allExpanded));
+  document.querySelectorAll(".ledger-split-row").forEach(s => s.style.display = allExpanded ? "table-row" : "none");
 };
 
-// Drawer Toggle
+// Accordion Toggle
+const cpaAccordion = document.getElementById("cpaAccordion");
+document.getElementById("cpaAccordionToggle").onclick = () => {
+  cpaAccordion.classList.toggle("open");
+};
 document.getElementById("btnToggleSettings").onclick = () => {
-  document.getElementById("settingsDrawer").classList.toggle("open");
+  cpaAccordion.classList.toggle("open");
+  if (cpaAccordion.classList.contains("open")) {
+    cpaAccordion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 };
-document.getElementById("btnCloseDrawer").onclick = () => {
-  document.getElementById("settingsDrawer").classList.remove("open");
-};
-document.querySelectorAll(".field-group input, .field-group select").forEach(el => {
+
+document.querySelectorAll(".field-box input, .field-box select").forEach(el => {
   el.onchange = runConversion;
 });
 
-// Dropzone & File browse
+// Dropzone & File Browse
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 document.getElementById("btnBrowseFile").onclick = (e) => {
@@ -1182,7 +1784,7 @@ function readFile(file) {
   reader.readAsText(file);
 }
 
-// Samples
+// Sample Loader Pills
 document.getElementById("btnSampleTx").onclick = (e) => {
   e.stopPropagation();
   currentCsvRaw = SAMPLE_TRANSACTIONS;
@@ -1196,7 +1798,7 @@ document.getElementById("btnSampleTransfer").onclick = (e) => {
   runConversion();
 };
 
-// Download
+// Consolidated Download
 document.getElementById("btnDownload").onclick = () => {
   if (currentEntries.length === 0) return;
   const csvContent = generateGnuCashCSV(currentEntries);
@@ -1211,7 +1813,7 @@ document.getElementById("btnDownload").onclick = () => {
   document.body.removeChild(link);
 };
 
-// Theme toggle
+// Theme Toggle
 const themeBtn = document.getElementById("btnThemeToggle");
 let currentTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", currentTheme);
@@ -1239,7 +1841,7 @@ document.getElementById("proForm").onsubmit = (e) => {
 // Profile Export & Import (100% Client-Side Rules)
 document.getElementById("btnExportProfile").onclick = () => {
   const profile = {
-    version: "1.0",
+    version: "2.0",
     schema: "gnucash-map-profile",
     createdAt: new Date().toISOString(),
     mode: document.getElementById("modeSelect").value,
@@ -1307,7 +1909,7 @@ window.exportAuditEvidence = async function() {
   return hashedEvents;
 };
 
-// Initial run
+// Initial boot
 runConversion();
 </script>
 
