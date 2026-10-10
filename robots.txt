@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://4ourenterprises.me/square-to-gnucash/sitemap.xml
+Sitemap: https://4ourceo.github.io/square-to-gnucash/sitemap.xml
