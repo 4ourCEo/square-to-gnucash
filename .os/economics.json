@@ -1,0 +1,19 @@
+{
+  "note": "Kernel rule (section 2): economics must include founder/operator time at target revenue levels.",
+  "currency": "USD",
+  "owner_time_included": true,
+  "target_revenue_level": null,
+  "owner_hours_per_week_at_target": null,
+  "cost_structure": {
+    "fixed": [],
+    "variable": []
+  },
+  "runway_months": null,
+  "reserve_policy": null,
+  "margins": {
+    "gross_margin_floor": null,
+    "contribution_margin_floor": null
+  },
+  "capital_preference": "Prefer optionality, runway, productive capacity, and variable cost over unnecessary fixed obligations.",
+  "notes": null
+}

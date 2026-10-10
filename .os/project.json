@@ -1,0 +1,26 @@
+{
+  "project_id": "proj_square_gnucash_001",
+  "name": "Square to GnuCash Reconciliation",
+  "current_state": "EXPERIMENT",
+  "previous_state": "DISCOVERY",
+  "state_entered_at": "2026-10-10T00:00:00Z",
+  "blocked": false,
+  "blocking_reason": null,
+  "active_phase_gate": "GATE_COMMERCIAL_VALIDATION_14D",
+  "active_capabilities": [
+    "opportunity-discovery",
+    "design-engine",
+    "evidence-ledger"
+  ],
+  "attestations": {
+    "zero_server_upload": true,
+    "zero_ad_spend": true,
+    "mit_license": true
+  },
+  "revision": 1,
+  "kernel_version": "2.1",
+  "constitution_version": "1.0",
+  "policy_version": "2.1",
+  "compatibility_version": "1.0",
+  "design_engine_version": "0.1"
+}

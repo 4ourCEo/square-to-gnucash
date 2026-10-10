@@ -1,0 +1,58 @@
+{
+  "kernel_version": "2.1",
+  "compatibility_version": "1.0",
+  "note": "Gate criteria live in data, not code. Declare project-specific thresholds BEFORE results are measured (Kernel v2.1, section 9). Clause operators are limited to the gate-definition schema: evidence_count (>=, >, ==, <=, <) and attestation (is_true).",
+  "gates": {
+    "VALIDATION": {
+      "gate_id": "VALIDATION",
+      "transition_target": "OFFER",
+      "approval_requirement": "AUTO_APPROVE",
+      "clauses": [
+        {
+          "clause_id": "validation-evidence-volume",
+          "kind": "evidence_count",
+          "operator": ">=",
+          "threshold": 1,
+          "evidence_at_least": "CUSTOMER",
+          "freshness_window_days": null,
+          "required_evidence_ids": [],
+          "deadline": null,
+          "description": "Set the qualifying-evidence threshold for this project before testing."
+        }
+      ]
+    },
+    "BUILD": {
+      "gate_id": "BUILD",
+      "transition_target": "BUILD",
+      "approval_requirement": "HUMAN_APPROVE",
+      "clauses": [
+        { "clause_id": "architecture-approved", "kind": "attestation", "field": "architecture_approved", "operator": "is_true" },
+        { "clause_id": "data-contracts-locked", "kind": "attestation", "field": "data_contracts_locked", "operator": "is_true" },
+        { "clause_id": "failure-modes-defined", "kind": "attestation", "field": "failure_modes_defined", "operator": "is_true" },
+        { "clause_id": "acceptance-criteria-locked", "kind": "attestation", "field": "acceptance_criteria_locked", "operator": "is_true" }
+      ]
+    },
+    "LAUNCH": {
+      "gate_id": "LAUNCH",
+      "transition_target": "LAUNCH",
+      "approval_requirement": "HUMAN_APPROVE",
+      "clauses": [
+        { "clause_id": "tests-pass", "kind": "attestation", "field": "tests_pass", "operator": "is_true" },
+        { "clause_id": "review-complete", "kind": "attestation", "field": "review_complete", "operator": "is_true" },
+        { "clause_id": "observability-in-place", "kind": "attestation", "field": "observability_in_place", "operator": "is_true" },
+        { "clause_id": "deployment-checks-pass", "kind": "attestation", "field": "deployment_checks_pass", "operator": "is_true" }
+      ]
+    },
+    "SCALE": {
+      "gate_id": "SCALE",
+      "transition_target": "SCALE",
+      "approval_requirement": "HUMAN_APPROVE",
+      "clauses": [
+        { "clause_id": "channel-repeatability", "kind": "attestation", "field": "channel_repeatability_met", "operator": "is_true" },
+        { "clause_id": "unit-economics", "kind": "attestation", "field": "unit_economics_met", "operator": "is_true" },
+        { "clause_id": "fulfillment-stability", "kind": "attestation", "field": "fulfillment_stability_met", "operator": "is_true" },
+        { "clause_id": "owner-independence", "kind": "attestation", "field": "owner_independence_met", "operator": "is_true" }
+      ]
+    }
+  }
+}

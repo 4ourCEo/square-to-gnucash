@@ -1,0 +1,37 @@
+{
+  "note": "Risk register. Irreversible, regulated, contractual, destructive, or high-liability actions require explicit approval policy (section 2).",
+  "categories": {
+    "legal": {
+      "level": null,
+      "notes": null,
+      "requires_explicit_approval": true
+    },
+    "platform": {
+      "level": null,
+      "notes": null,
+      "requires_explicit_approval": false
+    },
+    "security": {
+      "level": null,
+      "notes": null,
+      "requires_explicit_approval": true
+    },
+    "operational": {
+      "level": null,
+      "notes": null,
+      "requires_explicit_approval": false
+    },
+    "concentration": {
+      "level": null,
+      "notes": null,
+      "requires_explicit_approval": false
+    }
+  },
+  "declared_limits": {
+    "legal": null,
+    "platform": null,
+    "security": null,
+    "operational": null,
+    "concentration": null
+  }
+}

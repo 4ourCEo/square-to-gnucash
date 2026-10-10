@@ -1,0 +1,16 @@
+{
+  "note": "Distribution operates continuously in two modes (section 4). No production BUILD without a credible first-customer path.",
+  "active_mode": "VALIDATION_DISTRIBUTION",
+  "first_customer_path": null,
+  "validation_distribution": {
+    "objective": "Reduce uncertainty and obtain stronger evidence.",
+    "channels": [],
+    "evidence_ids": []
+  },
+  "scale_distribution": {
+    "objective": "Expand a proven channel with acceptable economics and delivery stability.",
+    "channels": [],
+    "evidence_ids": []
+  },
+  "pre_build_refusal_rule": "Before BUILD, production application engineering is prohibited. Implementation is permitted only when its explicit purpose is to reduce a documented uncertainty in validation.plan.json."
+}

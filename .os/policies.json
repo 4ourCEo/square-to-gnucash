@@ -1,0 +1,6 @@
+{
+  "kernel_version": "2.1",
+  "policy_version": "1.0",
+  "note": "Cross-cutting rules, independent of project state. Policy executes before state/gate/capability execution; a DENY cannot be weakened by any lower layer. Declare project-specific rules here. Effects: ALLOW | DENY | REQUIRES_APPROVAL. Match on intent, capability, side_effect_class, state, and params (<param>_gte|gt|lte|lt|eq).",
+  "policies": []
+}

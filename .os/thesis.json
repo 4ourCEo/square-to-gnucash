@@ -1,0 +1,8 @@
+{
+  "thesis_id": "thesis_sq_gnucash_001",
+  "statement": "Small businesses recording Square sales in GnuCash will independently discover and adopt a free client-side double-entry multi-split converter, and at least 2 will demonstrate paid intent ($19 one-time) for saved mapping rules within 14 days without direct outreach.",
+  "status": "ACTIVE",
+  "scope": "Sole proprietors and micro-businesses using Square for transactions and GnuCash for accounting. Excludes businesses using QuickBooks, Xero, or automated ERP sync.",
+  "falsification": "Less than 15 completed CSV conversions or less than 2 paid intent signals within 14 days of public availability with zero ad spend.",
+  "created_at": "2026-10-10T00:00:00Z"
+}

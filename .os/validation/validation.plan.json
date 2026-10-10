@@ -1,0 +1,10 @@
+{
+  "experiment_id": "exp_00000000000000000000000000",
+  "hypothesis": "Specific testable belief.",
+  "method": "Cheapest valid test.",
+  "success_threshold": "Declared before execution.",
+  "failure_threshold": "Declared before execution.",
+  "evidence_required": "CUSTOMER",
+  "deadline": null,
+  "resulting_decision": "Advance / revise / revert / kill"
+}
