@@ -1,16 +1,30 @@
 {
-  "note": "Distribution operates continuously in two modes (section 4). No production BUILD without a credible first-customer path.",
-  "active_mode": "VALIDATION_DISTRIBUTION",
-  "first_customer_path": null,
-  "validation_distribution": {
-    "objective": "Reduce uncertainty and obtain stronger evidence.",
-    "channels": [],
-    "evidence_ids": []
-  },
-  "scale_distribution": {
-    "objective": "Expand a proven channel with acceptable economics and delivery stability.",
-    "channels": [],
-    "evidence_ids": []
-  },
-  "pre_build_refusal_rule": "Before BUILD, production application engineering is prohibited. Implementation is permitted only when its explicit purpose is to reduce a documented uncertainty in validation.plan.json."
+  "policy": "ZERO_OUTBOUND_1ON1",
+  "paid_advertising_permitted": false,
+  "seeding_post_ceiling": 2,
+  "posts_published_count": 0,
+  "authorized_channels": [
+    "ORGANIC_SEARCH_INDEXING",
+    "FOSS_PROBLEM_THREAD_REFERENCE"
+  ],
+  "pre_cleared_threads": [
+    {
+      "channel": "Reddit r/gnucash",
+      "target_query": "Square to GnuCash import CSV split fees",
+      "status": "APPROVED_PRE_CLEARANCE",
+      "verbatim_template": "Built a small open-source, client-side utility to solve this exact problem: it converts Square Transactions.csv and Transfers.csv into balanced GnuCash multi-split CSVs (handling fees, sales taxes, tips, and clearing deposits). 100% in-browser, zero server uploads, MIT licensed: https://4ourenterprises.me/square-to-gnucash/ (source: https://github.com/4ourCEo/square-to-gnucash)"
+    },
+    {
+      "channel": "GnuCash User Forum / Archive",
+      "target_query": "reconciling Square POS processing fees and gross sales",
+      "status": "APPROVED_PRE_CLEARANCE",
+      "verbatim_template": "If you're still looking for an automated way to prepare Square exports for the GnuCash CSV Import Assistant, I created a free, zero-upload tool that parses Square transaction/settlement files into balanced multi-split journal entries: https://4ourenterprises.me/square-to-gnucash/ (open-source MIT, runs locally in browser memory)."
+    }
+  ],
+  "rules": {
+    "no_promotional_rhetoric": true,
+    "no_followup_bumping": true,
+    "mandatory_source_link": true,
+    "mandatory_privacy_disclosure": true
+  }
 }

@@ -1,19 +1,23 @@
 {
   "note": "Kernel rule (section 2): economics must include founder/operator time at target revenue levels.",
   "currency": "USD",
+  "capital_outlay_limit": 0.00,
+  "engineering_hour_budget": 5.0,
+  "engineering_hours_spent": 3.25,
+  "capital_spent": 0.00,
   "owner_time_included": true,
-  "target_revenue_level": null,
-  "owner_hours_per_week_at_target": null,
+  "pricing_model": {
+    "core_converter": "FREE",
+    "pro_lifetime_license": 19.00,
+    "early_bird_discount_price": 9.50
+  },
   "cost_structure": {
-    "fixed": [],
+    "fixed": [
+      { "item": "GitHub Pages Hosting", "monthly_cost": 0.00 },
+      { "item": "Ad Spend Budget", "monthly_cost": 0.00 }
+    ],
     "variable": []
   },
-  "runway_months": null,
-  "reserve_policy": null,
-  "margins": {
-    "gross_margin_floor": null,
-    "contribution_margin_floor": null
-  },
   "capital_preference": "Prefer optionality, runway, productive capacity, and variable cost over unnecessary fixed obligations.",
-  "notes": null
+  "status": "RATIFIED"
 }

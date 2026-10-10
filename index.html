@@ -715,6 +715,11 @@
         <input type="text" id="accountTips" value="Liabilities:Tips Payable">
       </div>
     </div>
+    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); flex-wrap: wrap;">
+      <button class="btn-outline" id="btnExportProfile" style="font-size: 0.75rem;">Export Profile (.json)</button>
+      <button class="btn-outline" id="btnImportProfile" style="font-size: 0.75rem;">Import Profile</button>
+      <input type="file" id="profileFileInput" accept=".json" style="display: none;">
+    </div>
   </div>
 
   <!-- Compact Upload Strip -->
@@ -1229,6 +1234,77 @@ document.getElementById("proForm").onsubmit = (e) => {
   logTelemetry("pro_lead_submitted", { email });
   document.getElementById("proForm").style.display = "none";
   document.getElementById("proSuccess").style.display = "block";
+};
+
+// Profile Export & Import (100% Client-Side Rules)
+document.getElementById("btnExportProfile").onclick = () => {
+  const profile = {
+    version: "1.0",
+    schema: "gnucash-map-profile",
+    createdAt: new Date().toISOString(),
+    mode: document.getElementById("modeSelect").value,
+    accounts: {
+      bank: document.getElementById("accountBank").value,
+      fee: document.getElementById("accountFee").value,
+      sales: document.getElementById("accountSales").value,
+      tax: document.getElementById("accountTax").value,
+      tips: document.getElementById("accountTips").value
+    }
+  };
+  const blob = new Blob([JSON.stringify(profile, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "gnucash_mapping_profile.json";
+  a.click();
+  logTelemetry("profile_exported");
+};
+
+const profileInput = document.getElementById("profileFileInput");
+document.getElementById("btnImportProfile").onclick = () => profileInput.click();
+profileInput.onchange = (e) => {
+  if (e.target.files.length > 0) {
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const profile = JSON.parse(evt.target.result);
+        if (profile.accounts) {
+          if (profile.mode) document.getElementById("modeSelect").value = profile.mode;
+          if (profile.accounts.bank) document.getElementById("accountBank").value = profile.accounts.bank;
+          if (profile.accounts.fee) document.getElementById("accountFee").value = profile.accounts.fee;
+          if (profile.accounts.sales) document.getElementById("accountSales").value = profile.accounts.sales;
+          if (profile.accounts.tax) document.getElementById("accountTax").value = profile.accounts.tax;
+          if (profile.accounts.tips) document.getElementById("accountTips").value = profile.accounts.tips;
+          runConversion();
+          logTelemetry("profile_imported");
+        }
+      } catch (err) {
+        alert("Invalid profile JSON file");
+      }
+    };
+    reader.readAsText(e.target.files[0]);
+  }
+};
+
+// Sovereign OS Evidence Export Bridge
+window.exportAuditEvidence = async function() {
+  const events = JSON.parse(localStorage.getItem(TELEMETRY_KEY) || "[]");
+  const hashedEvents = await Promise.all(events.map(async (ev) => {
+    const canonical = JSON.stringify(ev);
+    const msgBuffer = new TextEncoder().encode(canonical);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return { ...ev, hash: hashHex };
+  }));
+  const content = hashedEvents.map(e => JSON.stringify(e)).join("\n");
+  const blob = new Blob([content], { type: "application/x-ndjson" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "evidence.jsonl";
+  a.click();
+  console.log("Exported", hashedEvents.length, "audit records with SHA-256 hashes.");
+  return hashedEvents;
 };
 
 // Initial run
