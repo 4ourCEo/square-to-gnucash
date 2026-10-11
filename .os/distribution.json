@@ -2,7 +2,7 @@
   "policy": "ZERO_OUTBOUND_1ON1",
   "paid_advertising_permitted": false,
   "seeding_post_ceiling": 2,
-  "posts_published_count": 0,
+  "posts_published_count": 1,
   "authorized_channels": [
     "ORGANIC_SEARCH_INDEXING",
     "FOSS_PROBLEM_THREAD_REFERENCE"
@@ -11,7 +11,9 @@
     {
       "channel": "Reddit r/gnucash",
       "target_query": "Square to GnuCash import CSV split fees",
-      "status": "APPROVED_PRE_CLEARANCE",
+      "status": "PUBLISHED",
+      "live_url": "https://www.reddit.com/r/GnuCash/comments/1x2trjo/i_was_tired_of_manually_splitting_square/",
+      "published_at": "2026-10-10T17:00:00-07:00",
       "verbatim_template": "Built a small open-source, client-side utility to solve this exact problem: it converts Square Transactions.csv and Transfers.csv into balanced GnuCash multi-split CSVs (handling fees, sales taxes, tips, and clearing deposits). 100% in-browser, zero server uploads, MIT licensed: https://4ourenterprises.me/square-to-gnucash/ (source: https://github.com/4ourCEo/square-to-gnucash)"
     },
     {
